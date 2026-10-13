@@ -1,1 +1,1 @@
-# Mac-CheeseOS
+"Welcome to Mac & CheeseOS! A delightful, fully immersive web operating system where productivity meets comfort. Manage your files, browse live news and weather, play from a selection of 100 mini-games, and jot down notes effortlessly—all with a password-free profile login for instant access."
