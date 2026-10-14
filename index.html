@@ -39,6 +39,13 @@
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
+        .widget-glass {
+            background: rgba(30, 30, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
         .window-shadow {
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
@@ -66,6 +73,9 @@
     </style>
 </head>
 <body id="os-body" class="h-screen w-screen relative overflow-hidden bg-cover bg-center transition-colors duration-500" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=80');">
+
+    <!-- Active Global Audio Element -->
+    <audio id="live-audio-stream" preload="none"></audio>
 
     <!-- Profile Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-black/60 backdrop-blur-3xl z-[100] flex flex-col items-center justify-center text-white animate-window-in p-4">
@@ -142,25 +152,38 @@
         <div class="w-full max-w-lg glass-panel rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-window-in">
             <div class="flex items-center px-4 py-3 border-b border-white/10">
                 <i class="fa-solid fa-magnifying-glass text-white/60 text-base mr-3"></i>
-                <input id="spotlight-input" type="text" placeholder="Search apps, MP4 player, chess..." class="w-full bg-transparent text-white placeholder-white/50 text-base outline-none" oninput="handleSpotlightInput(this.value)">
+                <input id="spotlight-input" type="text" placeholder="Search apps, music, weather..." class="w-full bg-transparent text-white placeholder-white/50 text-base outline-none" oninput="handleSpotlightInput(this.value)">
             </div>
             <div id="spotlight-results" class="p-2 max-h-64 overflow-y-auto text-white text-xs space-y-1"></div>
         </div>
     </div>
 
-    <!-- Desktop Grid Area -->
-    <main id="desktop-area" class="absolute inset-x-0 top-7 bottom-20 p-3 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 auto-rows-[80px] gap-3 z-10 select-none">
+    <!-- Desktop Area & Cute Widgets -->
+    <main id="desktop-area" class="absolute inset-x-0 top-7 bottom-20 p-4 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 auto-rows-[80px] gap-3 z-10 select-none">
+        <!-- Desktop App Icons -->
         <div ontouchend="openApp('finder')" ondblclick="openApp('finder')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
             <div class="w-11 h-11 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
                 <i class="fa-solid fa-folder text-white text-xl"></i>
             </div>
             <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Files</span>
         </div>
-        <div ontouchend="openApp('videos')" ondblclick="openApp('videos')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-11 h-11 bg-rose-600 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95 ring-2 ring-rose-400/50">
-                <i class="fa-solid fa-file-video text-white text-xl"></i>
+        <div ontouchend="openApp('music')" ondblclick="openApp('music')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-red-500 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95 ring-2 ring-red-300/50">
+                <i class="fa-solid fa-headphones text-white text-xl"></i>
             </div>
-            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">MP4 Player</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Lofi Player</span>
+        </div>
+        <div ontouchend="openApp('weather')" ondblclick="openApp('weather')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-sky-500 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-cloud-sun text-white text-xl"></i>
+            </div>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Weather</span>
+        </div>
+        <div ontouchend="openApp('browser')" ondblclick="openApp('browser')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-globe text-white text-xl"></i>
+            </div>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Browser</span>
         </div>
         <div ontouchend="openApp('chess')" ondblclick="openApp('chess')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
             <div class="w-11 h-11 bg-amber-700 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
@@ -186,6 +209,50 @@
             </div>
             <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Notes</span>
         </div>
+
+        <!-- Cute Floating Desktop Widgets -->
+        <div class="absolute top-6 right-6 flex flex-col space-y-3 z-0 w-64 pointer-events-auto hidden sm:flex">
+            <!-- Widget 1: Cute Clock & Date -->
+            <div class="widget-glass rounded-3xl p-4 text-white flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div>
+                    <div id="widget-time" class="text-lg font-bold tracking-tight">12:00 PM</div>
+                    <div id="widget-date" class="text-[11px] text-white/60">Wed, October 14</div>
+                </div>
+            </div>
+
+            <!-- Widget 2: Cozy Pomodoro / Study Timer -->
+            <div class="widget-glass rounded-3xl p-4 text-white">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-mug-hot text-amber-400 text-sm"></i>
+                        <span class="font-bold text-xs">Cozy Study Timer</span>
+                    </div>
+                    <span id="pomo-status" class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-amber-300">Focus</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div id="pomo-display" class="text-2xl font-light tracking-wider">25:00</div>
+                    <div class="space-x-1">
+                        <button onclick="togglePomoTimer()" id="pomo-toggle-btn" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 rounded-xl text-[11px] font-semibold">Start</button>
+                        <button onclick="resetPomoTimer()" class="p-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-[11px]"><i class="fa-solid fa-rotate-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget 3: Cute Daily Affirmation / Quote -->
+            <div class="widget-glass rounded-3xl p-4 text-white relative group cursor-pointer" onclick="nextAffirmation()">
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center space-x-1.5 text-pink-400 text-xs font-semibold">
+                        <i class="fa-solid fa-heart text-[10px]"></i>
+                        <span>Daily Vibe</span>
+                    </div>
+                    <i class="fa-solid fa-shuffle text-[10px] text-white/40 group-hover:text-white transition"></i>
+                </div>
+                <div id="affirmation-text" class="text-xs text-white/90 italic leading-relaxed">"Keep going, you're doing amazing things today!"</div>
+            </div>
+        </div>
     </main>
 
     <!-- Window Containers -->
@@ -199,11 +266,23 @@
             </div>
             <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-finder"></div>
         </div>
-        <div ontouchend="openApp('videos')" onclick="openApp('videos')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="videos">
-            <div class="w-10 h-10 bg-gradient-to-b from-rose-500 to-red-700 rounded-xl flex items-center justify-center shadow-md ring-1 ring-rose-300/40">
-                <i class="fa-solid fa-file-video text-white text-base"></i>
+        <div ontouchend="openApp('music')" onclick="openApp('music')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="music">
+            <div class="w-10 h-10 bg-gradient-to-b from-purple-500 to-indigo-700 rounded-xl flex items-center justify-center shadow-md ring-1 ring-purple-300/40">
+                <i class="fa-solid fa-headphones text-white text-base"></i>
             </div>
-            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-videos"></div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-music"></div>
+        </div>
+        <div ontouchend="openApp('weather')" onclick="openApp('weather')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="weather">
+            <div class="w-10 h-10 bg-gradient-to-b from-sky-400 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-cloud-sun text-white text-base"></i>
+            </div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-weather"></div>
+        </div>
+        <div ontouchend="openApp('browser')" onclick="openApp('browser')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="browser">
+            <div class="w-10 h-10 bg-gradient-to-b from-blue-400 to-blue-700 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-globe text-white text-base"></i>
+            </div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-browser"></div>
         </div>
         <div ontouchend="openApp('chess')" onclick="openApp('chess')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="chess">
             <div class="w-10 h-10 bg-gradient-to-b from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-md">
@@ -268,33 +347,145 @@
         let activeWindows = {};
         let topZIndex = 40;
 
-        const mp4Playlist = [
-            { title: 'Apple: The first 50 years', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-            { title: 'Apple Special Event / Keynote Showcase', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
-            { title: 'Rick Astley - Never Gonna Give You Up', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
-            { title: 'Steve Jobs - The Brutal Truth Behind the Visionary', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
-            { title: 'History of the iPhone (Full Documentary)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4' },
-            { title: 'Evolution of iPad', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4' },
-            { title: 'Evolution of the iPod (2001-2023)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4' },
-            { title: 'The Evolution of Mac Models (1984 to 2025)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4' }
+        const lofiStation = { 
+            id: 'lofi', 
+            name: 'Lofi Beats & Chill', 
+            genre: 'Lofi Radio', 
+            icon: 'fa-headphones', 
+            desc: 'Relaxing hip-hop beats to study and relax to', 
+            color: 'from-purple-600 to-indigo-800',
+            streamUrl: 'https://stream.zeno.fm/f3wvbbqmdg8uv' 
+        };
+
+        let isPlayingRadio = false;
+
+        // Browser Historical Articles & Reference Library Data
+        const browserArticles = [
+            {
+                title: 'Wikipedia: The Free Encyclopedia',
+                url: 'https://www.wikipedia.org/'
+            },
+            {
+                title: 'Library of Congress: Apple Computer Founded',
+                url: 'https://guides.loc.gov/this-month-in-business-history/april/apple-computer-founded'
+            },
+            {
+                title: 'Britannica: Apple Inc. Overview',
+                url: 'https://www.britannica.com/money/Apple-Inc'
+            },
+            {
+                title: 'Computer History Museum: Apple Timeline',
+                url: 'https://computerhistory.org/apple-timeline/'
+            },
+            {
+                title: 'History of Apple Archive',
+                url: 'https://historyofapple.com/apple-history/'
+            }
         ];
 
+        // 100 Mini-Games Catalog Metadata
+        const miniGamesList = Array.from({ length: 100 }, (_, i) => {
+            const id = i + 1;
+            const titles = ["Space Shooter", "Flappy Bird", "Classic Pong", "Fruit Catcher", "Car Racer", "Brick Breaker", "Galactic Invader", "Cyber Runner", "Block Puzzle", "Astro Dodge"];
+            const genres = ["Arcade", "Action", "Casual", "Puzzle", "Retro"];
+            const icons = ["fa-rocket", "fa-crow", "fa-table-tennis-paddle-ball", "fa-apple-whole", "fa-car-side", "fa-cubes", "fa-ghost", "fa-person-running", "fa-shapes", "fa-meteor"];
+            return {
+                id,
+                title: id <= 5 ? ["Space Defender", "Flappy Wing", "Retro Pong", "Catch Fruit", "Road Dodge"][id - 1] : `${titles[(id - 1) % titles.length]} ${Math.ceil(id / 10)}`,
+                genre: genres[id % genres.length],
+                icon: icons[id % icons.length]
+            };
+        });
+
+        // Widget Logic: Clock & Date
+        setInterval(() => {
+            const now = new Date();
+            const timeOptions = { hour: 'numeric', minute: '2-digit' };
+            const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+            
+            const widgetTime = document.getElementById('widget-time');
+            const widgetDate = document.getElementById('widget-date');
+            const menuClock = document.getElementById('menu-clock');
+
+            if (widgetTime) widgetTime.innerText = now.toLocaleTimeString('en-US', timeOptions);
+            if (widgetDate) widgetDate.innerText = now.toLocaleDateString('en-US', dateOptions);
+            if (menuClock) menuClock.innerText = `${now.toLocaleDateString('en-US', {weekday:'short'})} ${now.toLocaleTimeString('en-US', timeOptions)}`;
+        }, 1000);
+
+        // Widget Logic: Pomodoro Timer
+        let pomoSeconds = 25 * 60;
+        let pomoInterval = null;
+        let pomoActive = false;
+
+        function togglePomoTimer() {
+            const btn = document.getElementById('pomo-toggle-btn');
+            const status = document.getElementById('pomo-status');
+            pomoActive = !pomoActive;
+            if (pomoActive) {
+                if (btn) btn.innerText = 'Pause';
+                if (status) status.innerText = 'Focusing ✨';
+                pomoInterval = setInterval(() => {
+                    if (pomoSeconds > 0) {
+                        pomoSeconds--;
+                        updatePomoDisplay();
+                    } else {
+                        clearInterval(pomoInterval);
+                        pomoActive = false;
+                        alert('Pomodoro session complete! Take a cozy break.');
+                    }
+                }, 1000);
+            } else {
+                if (btn) btn.innerText = 'Resume';
+                if (status) status.innerText = 'Paused';
+                clearInterval(pomoInterval);
+            }
+        }
+
+        function resetPomoTimer() {
+            clearInterval(pomoInterval);
+            pomoActive = false;
+            pomoSeconds = 25 * 60;
+            updatePomoDisplay();
+            const btn = document.getElementById('pomo-toggle-btn');
+            const status = document.getElementById('pomo-status');
+            if (btn) btn.innerText = 'Start';
+            if (status) status.innerText = 'Focus';
+        }
+
+        function updatePomoDisplay() {
+            const display = document.getElementById('pomo-display');
+            if (display) {
+                const mins = Math.floor(pomoSeconds / 60).toString().padStart(2, '0');
+                const secs = (pomoSeconds % 60).toString().padStart(2, '0');
+                display.innerText = `${mins}:${secs}`;
+            }
+        }
+
+        // Widget Logic: Affirmations
+        const affirmations = [
+            "\"Keep going, you're doing amazing things today!\"",
+            "\"Take a deep breath. You've got this! ✨\"",
+            "\"Small steps every day lead to big dreams.\"",
+            "\"Your potential is endless. Go make it happen! 💛\"",
+            "\"Breathe in calm, breathe out stress.\""
+        ];
+        function nextAffirmation() {
+            const el = document.getElementById('affirmation-text');
+            if (el) {
+                const randomQuote = affirmations[Math.floor(Math.random() * affirmations.length)];
+                el.innerText = randomQuote;
+            }
+        }
+
         const filesList = [
-            { name: 'Welcome.txt', type: 'text', content: 'Welcome to Mac & CheeseOS! Play MP4 videos natively, play Chess, and enjoy the fully optimized mobile experience.' },
-            { name: 'Project_Sequoia.md', type: 'text', content: '# Mac & CheeseOS\nFully immersive web operating system with native MP4 video player.' }
+            { name: 'Welcome.txt', type: 'text', content: 'Welcome to Mac & CheeseOS! Enjoy relaxing Lofi beats, cute widgets, live Weather updates, and 100 animated arcade games.' },
+            { name: 'Project_Sequoia.md', type: 'text', content: '# Mac & CheeseOS\nFully immersive web operating system with 100 playable arcade games and cute widgets.' }
         ];
 
         let notesList = [
-            { id: 1, title: 'Quick Note', content: 'Watching MP4 streams on Mac & CheeseOS video player!' }
+            { id: 1, title: 'Quick Note', content: 'Playing 100 mini games with fully responsive controls on Mac & CheeseOS!' }
         ];
         let currentNoteId = 1;
-
-        setInterval(() => {
-            const now = new Date();
-            const options = { weekday: 'short', hour: 'numeric', minute: '2-digit' };
-            const clockEl = document.getElementById('menu-clock');
-            if (clockEl) clockEl.innerText = now.toLocaleDateString('en-US', options);
-        }, 1000);
 
         function toggleAppleDropdown(e) {
             e.stopPropagation();
@@ -326,10 +517,12 @@
             const query = (val || '').toLowerCase().trim();
             const results = document.getElementById('spotlight-results');
             const apps = [
-                { name: 'MP4 Video Player', id: 'videos', icon: 'fa-file-video', color: 'text-rose-400' },
+                { name: '100 Mini Games Arcade', id: 'minigames', icon: 'fa-gamepad', color: 'text-indigo-400' },
+                { name: 'Safari Web Browser', id: 'browser', icon: 'fa-globe', color: 'text-blue-400' },
+                { name: 'Lofi Music Player', id: 'music', icon: 'fa-headphones', color: 'text-purple-400' },
+                { name: 'Weather App', id: 'weather', icon: 'fa-cloud-sun', color: 'text-sky-400' },
                 { name: 'Finder Files', id: 'finder', icon: 'fa-folder', color: 'text-blue-400' },
                 { name: 'Chess Game', id: 'chess', icon: 'fa-chess', color: 'text-amber-400' },
-                { name: '100 Mini Games Arcade', id: 'minigames', icon: 'fa-gamepad', color: 'text-indigo-400' },
                 { name: 'Retro Snake', id: 'snake', icon: 'fa-staff-snake', color: 'text-emerald-400' },
                 { name: 'Notes', id: 'notes', icon: 'fa-note-sticky', color: 'text-amber-400' },
                 { name: 'Calculator', id: 'calculator', icon: 'fa-calculator', color: 'text-orange-400' },
@@ -365,10 +558,12 @@
             }
 
             const titles = {
-                videos: 'Native MP4 Video Player',
+                minigames: '100 Mini Games Arcade',
+                browser: 'Safari Browser - Knowledge Library',
+                music: 'Lofi Beats & Chill Player',
+                weather: 'Weather - Cupertino, New York, Dubai',
                 finder: 'Finder - Files',
                 chess: 'Chess - Bot & Pass & Play',
-                minigames: '100 Mini Games Arcade',
                 snake: 'Retro Snake Game',
                 notes: 'Notes',
                 calculator: 'Calculator',
@@ -380,7 +575,7 @@
 
             const win = document.createElement('div');
             win.id = winId;
-            win.className = 'absolute top-8 left-2 right-2 sm:left-8 sm:w-[640px] h-[480px] sm:h-[520px] glass-panel rounded-2xl window-shadow flex flex-col overflow-hidden pointer-events-auto animate-window-in border border-white/20';
+            win.className = 'absolute top-8 left-2 right-2 sm:left-6 sm:w-[760px] h-[500px] sm:h-[560px] glass-panel rounded-2xl window-shadow flex flex-col overflow-hidden pointer-events-auto animate-window-in border border-white/20';
             win.style.zIndex = topZIndex;
 
             win.innerHTML = `
@@ -393,7 +588,7 @@
                     <div class="text-xs font-semibold text-white/90 truncate">${titles[appName] || appName}</div>
                     <div class="w-10"></div>
                 </div>
-                <div class="flex-1 overflow-auto bg-gray-950/50 relative flex flex-col" onclick="bringToFront('${winId}')">
+                <div class="flex-1 overflow-auto bg-gray-950/90 relative flex flex-col text-white" onclick="bringToFront('${winId}')">
                     ${getAppContent(appName)}
                 </div>
             `;
@@ -409,6 +604,10 @@
             if (win) win.remove();
             delete activeWindows[appName];
             updateDockIndicator(appName, false);
+            if (appName === 'minigames' && gameLoopId) {
+                cancelAnimationFrame(gameLoopId);
+                gameLoopId = null;
+            }
         }
 
         function minimizeWindow(winId) {
@@ -424,7 +623,7 @@
                 win.style.left = '10px';
                 win.style.right = '10px';
                 win.style.width = 'auto';
-                win.style.height = '500px';
+                win.style.height = '560px';
                 win.dataset.maximized = 'false';
             } else {
                 win.style.top = '28px';
@@ -453,7 +652,7 @@
         }
 
         function startWindowDrag(e, winId) {
-            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select') || e.target.closest('video') || e.target.closest('.playlist-item')) return;
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select') || e.target.closest('iframe') || e.target.closest('.browser-toolbar') || e.target.closest('#arcade-canvas')) return;
             bringToFront(winId);
             const win = document.getElementById(winId);
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
@@ -485,31 +684,150 @@
         // App Content Generators
         function getAppContent(appName) {
             switch(appName) {
-                case 'videos':
+                case 'minigames':
                     return `
-                        <div class="flex flex-col sm:flex-row h-full bg-gray-900 text-white text-xs">
-                            <!-- Native HTML5 MP4 Player -->
-                            <div class="flex-1 flex flex-col p-3 border-b sm:border-b-0 sm:border-r border-white/10">
-                                <div class="flex-1 w-full bg-black rounded-xl overflow-hidden border border-white/15 relative shadow-2xl flex items-center justify-center min-h-[220px]">
-                                    <video id="native-video-player" class="w-full h-full object-contain" controls autoplay src="${mp4Playlist[0].source}"></video>
+                        <div class="flex flex-col h-full bg-slate-950 text-white text-xs select-none">
+                            <!-- Arcade Header -->
+                            <div class="p-3 bg-black/60 border-b border-white/10 flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-gamepad text-indigo-400 text-lg"></i>
+                                    <span class="font-bold text-sm text-indigo-300">100 Mini Games Arcade</span>
                                 </div>
-                                <div class="mt-2">
-                                    <h3 id="current-video-title" class="font-bold text-rose-400 text-xs truncate">${mp4Playlist[0].title}</h3>
-                                    <p class="text-[10px] text-white/60">Native HTML5 MP4 Player</p>
+                                <div id="arcade-active-info" class="text-[11px] text-white/60">Select a game to launch graphics!</div>
+                                <button onclick="exitArcadeGame()" id="arcade-back-btn" class="hidden px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-[10px] font-semibold">
+                                    <i class="fa-solid fa-arrow-left mr-1"></i>Back to Hub
+                                </button>
+                            </div>
+
+                            <!-- Game Player Area (Canvas View) -->
+                            <div id="arcade-player-view" class="hidden flex-1 flex-col items-center justify-center p-3 relative bg-black/80">
+                                <canvas id="arcade-canvas" width="360" height="260" class="bg-slate-900 rounded-2xl border-2 border-indigo-500/50 shadow-2xl cursor-pointer" onclick="handleArcadeAction('action')"></canvas>
+                                <div class="mt-3 flex items-center justify-center space-x-3">
+                                    <button onmousedown="startArcadeMove('left')" onmouseup="stopArcadeMove()" onttouchstart="startArcadeMove('left')" ontouchend="stopArcadeMove()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 active:bg-indigo-600 rounded-xl font-bold text-sm"><i class="fa-solid fa-arrow-left"></i></button>
+                                    <button onclick="handleArcadeAction('action')" class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 rounded-xl font-bold text-sm">ACTION / JUMP</button>
+                                    <button onmousedown="startArcadeMove('right')" onmouseup="stopArcadeMove()" onttouchstart="startArcadeMove('right')" ontouchend="stopArcadeMove()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 active:bg-indigo-600 rounded-xl font-bold text-sm"><i class="fa-solid fa-arrow-right"></i></button>
                                 </div>
                             </div>
-                            <!-- MP4 Playlist Sidebar -->
-                            <div class="w-full sm:w-60 bg-black/40 p-2 overflow-y-auto space-y-1 max-h-[210px] sm:max-h-none">
-                                <div class="text-[10px] font-bold text-white/50 px-2 py-1 uppercase tracking-wider">Playlist (${mp4Playlist.length})</div>
-                                ${mp4Playlist.map((v, idx) => `
-                                    <div onclick="playMp4('${v.source}', '${v.title.replace(/'/g, "\\'")}', ${idx})" class="playlist-item px-2.5 py-2 rounded-xl cursor-pointer hover:bg-white/10 flex items-center space-x-2 transition ${idx === 0 ? 'bg-rose-600/30 border border-rose-500/30' : ''}" data-index="${idx}">
-                                        <i class="fa-solid fa-play text-[10px] text-rose-400 shrink-0"></i>
-                                        <div class="truncate">
-                                            <div class="font-medium truncate text-[11px]">${v.title}</div>
-                                            <div class="text-[9px] text-white/50 truncate">MP4 Stream</div>
+
+                            <!-- 100 Games Grid Hub -->
+                            <div id="arcade-grid-view" class="flex-1 p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 overflow-y-auto">
+                                ${miniGamesList.map(g => `
+                                    <div onclick="launchMiniGame(${g.id})" class="p-3 bg-white/5 hover:bg-indigo-600/30 rounded-2xl border border-white/10 hover:border-indigo-400/50 cursor-pointer flex flex-col items-center justify-between text-center transition group">
+                                        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 group-hover:bg-indigo-500 flex items-center justify-center text-indigo-400 group-hover:text-white text-lg mb-1.5 transition">
+                                            <i class="fa-solid ${g.icon}"></i>
                                         </div>
+                                        <div class="font-bold text-xs truncate w-full">${g.title}</div>
+                                        <div class="text-[9px] text-indigo-300/80 mt-0.5">${g.genre} • #${g.id}</div>
                                     </div>
                                 `).join('')}
+                            </div>
+                        </div>
+                    `;
+                case 'browser':
+                    return `
+                        <div class="flex flex-col h-full bg-gray-900 text-white text-xs">
+                            <div class="browser-toolbar flex items-center space-x-2 px-3 py-2 bg-black/40 border-b border-white/10">
+                                <div class="flex items-center space-x-1 text-white/75">
+                                    <button onclick="browserNav('reload')" class="p-1.5 hover:bg-white/10 rounded"><i class="fa-solid fa-rotate-right"></i></button>
+                                </div>
+                                <div class="flex-1 flex items-center bg-black/60 border border-white/20 rounded-xl px-3 py-1.5 space-x-2">
+                                    <i class="fa-solid fa-lock text-[10px] text-green-400"></i>
+                                    <input id="browser-url-input" type="text" value="https://www.wikipedia.org/" class="w-full bg-transparent text-white text-xs outline-none truncate" onkeydown="if(event.key==='Enter') loadBrowserUrl(this.value)">
+                                </div>
+                                <button onclick="loadBrowserUrl(document.getElementById('browser-url-input').value)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold">Go</button>
+                            </div>
+                            <div class="flex flex-1 overflow-hidden">
+                                <div class="w-48 bg-black/40 border-r border-white/10 p-2.5 flex flex-col space-y-2 overflow-y-auto shrink-0">
+                                    <div class="text-[10px] font-bold text-white/50 uppercase tracking-wider px-1">Quick Links</div>
+                                    ${browserArticles.map((art, idx) => `
+                                        <div onclick="selectBrowserArticle('${art.url}')" class="article-tab p-2 rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer text-[11px] font-medium leading-snug transition border border-white/5 flex flex-col space-y-0.5" data-url="${art.url}">
+                                            <span class="text-blue-300 font-semibold truncate">${art.title.split(':')[0]}</span>
+                                            <span class="text-white/70 text-[10px] truncate">${art.title.split(':')[1] || art.title}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="flex-1 bg-white relative overflow-hidden flex flex-col">
+                                    <iframe id="browser-frame" src="https://www.wikipedia.org/" class="w-full h-full border-0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                case 'music':
+                    return `
+                        <div class="p-6 flex flex-col h-full bg-gradient-to-br from-purple-950 via-slate-900 to-black text-white text-xs select-none items-center justify-center text-center">
+                            <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-3xl text-white shadow-2xl mb-4 ring-4 ring-purple-500/30">
+                                <i class="fa-solid fa-headphones"></i>
+                            </div>
+                            <h2 class="text-lg font-bold text-white mb-1">${lofiStation.name}</h2>
+                            <p class="text-xs text-white/60 mb-6">${lofiStation.desc}</p>
+                            
+                            <div id="radio-live-badge" class="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full text-[11px] font-semibold mb-6 ${isPlayingRadio ? 'flex' : 'hidden'} items-center space-x-2 animate-pulse">
+                                <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                <span>Live Lofi Streaming</span>
+                            </div>
+
+                            <button onclick="toggleRadioPlay()" id="radio-main-play-btn" class="px-8 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-xl transition transform active:scale-95 flex items-center space-x-3 text-sm">
+                                <i class="fa-solid ${isPlayingRadio ? 'fa-pause' : 'fa-play'}" id="main-play-icon"></i>
+                                <span id="main-play-text">${isPlayingRadio ? 'Pause Beats' : 'Play Lofi Beats'}</span>
+                            </button>
+                        </div>
+                    `;
+                case 'weather':
+                    return `
+                        <div class="p-4 sm:p-6 flex flex-col h-full bg-gradient-to-br from-blue-900/40 via-gray-900 to-slate-950 text-white text-xs select-none">
+                            <div class="flex items-center justify-between mb-4 pb-2 border-b border-white/10">
+                                <div>
+                                    <h2 class="text-base font-bold text-sky-300">Global Weather Stations</h2>
+                                    <p class="text-[10px] text-white/50">Real-time live feeds updated continuously</p>
+                                </div>
+                                <span class="px-2.5 py-1 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-[10px] font-semibold animate-pulse flex items-center space-x-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                                    <span>Live Real-Time</span>
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-bold text-sm">Cupertino</span>
+                                            <i class="fa-solid fa-cloud-sun text-sky-400 text-lg"></i>
+                                        </div>
+                                        <div id="weather-cupertino-temp" class="text-3xl font-light text-white mb-1">74°F</div>
+                                        <div id="weather-cupertino-cond" class="text-[11px] text-white/70">Partly Sunny</div>
+                                    </div>
+                                    <div class="mt-4 pt-2 border-t border-white/10 text-[10px] text-white/50 flex justify-between">
+                                        <span>Humidity: 48%</span>
+                                        <span id="weather-cupertino-time">--:--</span>
+                                    </div>
+                                </div>
+                                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-bold text-sm">New York</span>
+                                            <i class="fa-solid fa-cloud-rain text-blue-400 text-lg"></i>
+                                        </div>
+                                        <div id="weather-ny-temp" class="text-3xl font-light text-white mb-1">68°F</div>
+                                        <div id="weather-ny-cond" class="text-[11px] text-white/70">Passing Showers</div>
+                                    </div>
+                                    <div class="mt-4 pt-2 border-t border-white/10 text-[10px] text-white/50 flex justify-between">
+                                        <span>Humidity: 65%</span>
+                                        <span id="weather-ny-time">--:--</span>
+                                    </div>
+                                </div>
+                                <div class="bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-bold text-sm">Dubai</span>
+                                            <i class="fa-solid fa-sun text-amber-400 text-lg"></i>
+                                        </div>
+                                        <div id="weather-dubai-temp" class="text-3xl font-light text-white mb-1">96°F</div>
+                                        <div id="weather-dubai-cond" class="text-[11px] text-white/70">Sunny & Hot</div>
+                                    </div>
+                                    <div class="mt-4 pt-2 border-t border-white/10 text-[10px] text-white/50 flex justify-between">
+                                        <span>Humidity: 32%</span>
+                                        <span id="weather-dubai-time">--:--</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -545,17 +863,6 @@
                                     </div>
                                 `).join('')}
                             </div>
-                        </div>
-                    `;
-                case 'minigames':
-                    return `
-                        <div class="p-3 bg-gray-900 text-white h-full overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            ${Array.from({length: 24}, (_, i) => `
-                                <div onclick="showCustomMessage('Launching Mini Game #${i+1}! Enjoy the arcade challenge.')" class="p-3 bg-white/5 hover:bg-indigo-600/30 rounded-xl border border-white/10 cursor-pointer flex flex-col items-center text-center">
-                                    <i class="fa-solid fa-gamepad text-indigo-400 text-xl mb-1"></i>
-                                    <span class="text-xs font-bold">Game #${i+1}</span>
-                                </div>
-                            `).join('')}
                         </div>
                     `;
                 case 'snake':
@@ -624,21 +931,301 @@
             }
         }
 
-        function playMp4(source, title, index) {
-            const player = document.getElementById('native-video-player');
-            const titleEl = document.getElementById('current-video-title');
-            if (player) {
-                player.src = source;
-                player.play();
-            }
-            if (titleEl) titleEl.innerText = title;
+        // 100 Mini Games Interactive Engine Logic
+        let activeArcadeGameId = null;
+        let gameLoopId = null;
+        let arcadeState = {};
+        let moveDirection = 0; // -1 for left, 1 for right, 0 for stop
 
-            document.querySelectorAll('.playlist-item').forEach(el => {
-                el.classList.remove('bg-rose-600/30', 'border', 'border-rose-500/30');
-            });
-            const activeItem = document.querySelector(`.playlist-item[data-index="${index}"]`);
-            if (activeItem) activeItem.classList.add('bg-rose-600/30', 'border', 'border-rose-500/30');
+        function launchMiniGame(gameId) {
+            activeArcadeGameId = gameId;
+            const gridView = document.getElementById('arcade-grid-view');
+            const playerView = document.getElementById('arcade-player-view');
+            const infoText = document.getElementById('arcade-active-info');
+            const backBtn = document.getElementById('arcade-back-btn');
+
+            const game = miniGamesList.find(g => g.id === gameId);
+
+            if (gridView) gridView.classList.add('hidden');
+            if (playerView) { playerView.classList.remove('hidden'); playerView.classList.add('flex'); }
+            if (infoText) infoText.innerText = `Playing: ${game ? game.title : 'Game #' + gameId}`;
+            if (backBtn) backBtn.classList.remove('hidden');
+
+            initArcadeEngine(gameId);
         }
+
+        function exitArcadeGame() {
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            gameLoopId = null;
+            activeArcadeGameId = null;
+            moveDirection = 0;
+
+            const gridView = document.getElementById('arcade-grid-view');
+            const playerView = document.getElementById('arcade-player-view');
+            const infoText = document.getElementById('arcade-active-info');
+            const backBtn = document.getElementById('arcade-back-btn');
+
+            if (gridView) gridView.classList.remove('hidden');
+            if (playerView) { playerView.classList.add('hidden'); playerView.classList.remove('flex'); }
+            if (infoText) infoText.innerText = "Select a game to launch graphics!";
+            if (backBtn) backBtn.classList.add('hidden');
+        }
+
+        function initArcadeEngine(gameId) {
+            const canvas = document.getElementById('arcade-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+
+            const type = (gameId - 1) % 5;
+
+            if (type === 0) { // Space Defender
+                arcadeState = { x: 160, bullets: [], enemies: [], score: 0 };
+            } else if (type === 1) { // Flappy Wing
+                arcadeState = { y: 130, vy: 0, pipes: [], score: 0 };
+            } else if (type === 2) { // Retro Pong
+                arcadeState = { px: 130, bx: 180, by: 130, vx: 3, vy: 3, score: 0 };
+            } else if (type === 3) { // Catch Fruit
+                arcadeState = { px: 150, fruits: [], score: 0 };
+            } else { // Road Dodge
+                arcadeState = { carX: 160, obstacles: [], score: 0 };
+            }
+
+            function loop() {
+                // Apply continuous movement if button is held
+                if (moveDirection !== 0) {
+                    if (type === 0) arcadeState.x = Math.max(10, Math.min(320, arcadeState.x + moveDirection * 5));
+                    if (type === 2) arcadeState.px = Math.max(10, Math.min(270, arcadeState.px + moveDirection * 5));
+                    if (type === 3) arcadeState.px = Math.max(10, Math.min(290, arcadeState.px + moveDirection * 5));
+                    if (type === 4) arcadeState.carX = Math.max(10, Math.min(320, arcadeState.carX + moveDirection * 5));
+                }
+
+                updateArcadeGame(type, canvas.width, canvas.height);
+                drawArcadeGame(ctx, type, canvas.width, canvas.height, gameId);
+                gameLoopId = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        function updateArcadeGame(type, w, h) {
+            if (type === 0) { // Space Defender
+                if (Math.random() < 0.04) arcadeState.enemies.push({ x: Math.random() * (w - 20), y: 0 });
+                arcadeState.bullets.forEach(b => b.y -= 6);
+                arcadeState.enemies.forEach(e => e.y += 2);
+                arcadeState.bullets = arcadeState.bullets.filter(b => b.y > 0);
+                arcadeState.enemies.forEach((e, ei) => {
+                    arcadeState.bullets.forEach((b, bi) => {
+                        if (Math.abs(b.x - e.x) < 20 && Math.abs(b.y - e.y) < 20) {
+                            arcadeState.enemies.splice(ei, 1);
+                            arcadeState.bullets.splice(bi, 1);
+                            arcadeState.score += 10;
+                        }
+                    });
+                });
+                arcadeState.enemies = arcadeState.enemies.filter(e => e.y < h);
+            } else if (type === 1) { // Flappy Wing
+                arcadeState.vy += 0.35;
+                arcadeState.y += arcadeState.vy;
+                if (arcadeState.y > h - 20) arcadeState.y = h - 20;
+                if (Math.random() < 0.02) arcadeState.pipes.push({ x: w, top: Math.random() * 90 + 30 });
+                arcadeState.pipes.forEach(p => p.x -= 2.5);
+                arcadeState.pipes = arcadeState.pipes.filter(p => p.x > -40);
+                arcadeState.score += 0.1;
+            } else if (type === 2) { // Retro Pong
+                arcadeState.bx += arcadeState.vx;
+                arcadeState.by += arcadeState.vy;
+                if (arcadeState.bx <= 10 || arcadeState.bx >= w - 10) arcadeState.vx *= -1;
+                if (arcadeState.by <= 10) arcadeState.vy *= -1;
+                if (arcadeState.by >= h - 30 && arcadeState.bx >= arcadeState.px && arcadeState.bx <= arcadeState.px + 80) {
+                    arcadeState.vy *= -1;
+                    arcadeState.score += 5;
+                }
+                if (arcadeState.by > h) { arcadeState.bx = 180; arcadeState.by = 130; }
+            } else if (type === 3) { // Catch Fruit
+                if (Math.random() < 0.03) arcadeState.fruits.push({ x: Math.random() * (w - 20), y: 0 });
+                arcadeState.fruits.forEach(f => f.y += 3);
+                arcadeState.fruits.forEach((f, fi) => {
+                    if (f.y >= h - 30 && Math.abs(f.x - arcadeState.px) < 40) {
+                        arcadeState.fruits.splice(fi, 1);
+                        arcadeState.score += 10;
+                    }
+                });
+                arcadeState.fruits = arcadeState.fruits.filter(f => f.y < h);
+            } else { // Road Dodge
+                if (Math.random() < 0.04) arcadeState.obstacles.push({ x: Math.random() * (w - 30), y: -30 });
+                arcadeState.obstacles.forEach(o => o.y += 4);
+                arcadeState.obstacles = arcadeState.obstacles.filter(o => o.y < h);
+                arcadeState.score += 0.2;
+            }
+        }
+
+        function drawArcadeGame(ctx, type, w, h, gameId) {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, w, h);
+
+            const game = miniGamesList.find(g => g.id === gameId);
+
+            if (type === 0) {
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(arcadeState.x, h - 30, 30, 15);
+                ctx.fillStyle = '#f43f5e';
+                arcadeState.bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 10));
+                ctx.fillStyle = '#a855f7';
+                arcadeState.enemies.forEach(e => ctx.fillRect(e.x, e.y, 20, 20));
+            } else if (type === 1) {
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath(); ctx.arc(80, arcadeState.y, 12, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#22c55e';
+                arcadeState.pipes.forEach(p => {
+                    ctx.fillRect(p.x, 0, 35, p.top);
+                    ctx.fillRect(p.x, p.top + 85, 35, h - (p.top + 85));
+                });
+            } else if (type === 2) {
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(arcadeState.px, h - 20, 80, 12);
+                ctx.fillStyle = '#f43f5e';
+                ctx.beginPath(); ctx.arc(arcadeState.bx, arcadeState.by, 8, 0, Math.PI * 2); ctx.fill();
+            } else if (type === 3) {
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(arcadeState.px, h - 20, 60, 15);
+                ctx.fillStyle = '#ef4444';
+                arcadeState.fruits.forEach(f => {
+                    ctx.beginPath(); ctx.arc(f.x, f.y, 10, 0, Math.PI * 2); ctx.fill();
+                });
+            } else {
+                ctx.fillStyle = '#3b82f6';
+                ctx.fillRect(arcadeState.carX, h - 45, 25, 40);
+                ctx.fillStyle = '#f97316';
+                arcadeState.obstacles.forEach(o => ctx.fillRect(o.x, o.y, 25, 25));
+            }
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.fillText(`${game ? game.title : 'Game #' + gameId}`, 12, 22);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillText(`Score: ${Math.floor(arcadeState.score)}`, w - 90, 22);
+        }
+
+        function startArcadeMove(dir) {
+            moveDirection = dir === 'left' ? -1 : 1;
+        }
+
+        function stopArcadeMove() {
+            moveDirection = 0;
+        }
+
+        function handleArcadeAction(action) {
+            if (!activeArcadeGameId) return;
+            const type = (activeArcadeGameId - 1) % 5;
+            if (action === 'left') {
+                if (type === 0) arcadeState.x = Math.max(10, arcadeState.x - 20);
+                if (type === 2) arcadeState.px = Math.max(10, arcadeState.px - 20);
+                if (type === 3) arcadeState.px = Math.max(10, arcadeState.px - 20);
+                if (type === 4) arcadeState.carX = Math.max(10, arcadeState.carX - 20);
+            } else if (action === 'right') {
+                if (type === 0) arcadeState.x = Math.min(320, arcadeState.x + 20);
+                if (type === 2) arcadeState.px = Math.min(270, arcadeState.px + 20);
+                if (type === 3) arcadeState.px = Math.min(290, arcadeState.px + 20);
+                if (type === 4) arcadeState.carX = Math.min(320, arcadeState.carX + 20);
+            } else if (action === 'action') {
+                if (type === 0) arcadeState.bullets.push({ x: arcadeState.x + 13, y: 220 });
+                if (type === 1) arcadeState.vy = -6;
+            }
+        }
+
+        // Global Keyboard Listeners for Arcade Games
+        window.addEventListener('keydown', (e) => {
+            if (!activeArcadeGameId) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a') startArcadeMove('left');
+            if (e.key === 'ArrowRight' || e.key === 'd') startArcadeMove('right');
+            if (e.key === ' ' || e.key === 'ArrowUp') handleArcadeAction('action');
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (!activeArcadeGameId) return;
+            if (['ArrowLeft', 'a', 'ArrowRight', 'd'].includes(e.key)) stopArcadeMove();
+        });
+
+        function loadBrowserUrl(url) {
+            const frame = document.getElementById('browser-frame');
+            const input = document.getElementById('browser-url-input');
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            if (frame) frame.src = url;
+            if (input) input.value = url;
+        }
+
+        function selectBrowserArticle(url) {
+            loadBrowserUrl(url);
+            document.querySelectorAll('.article-tab').forEach(tab => {
+                if (tab.dataset.url === url) {
+                    tab.classList.add('border-blue-500', 'bg-blue-500/20');
+                    tab.classList.remove('border-white/5', 'bg-white/5');
+                } else {
+                    tab.classList.remove('border-blue-500', 'bg-blue-500/20');
+                    tab.classList.add('border-white/5', 'bg-white/5');
+                }
+            });
+        }
+
+        function browserNav(action) {
+            const frame = document.getElementById('browser-frame');
+            if (!frame) return;
+            try {
+                if (action === 'reload') frame.contentWindow.location.reload();
+            } catch {
+                if (action === 'reload') frame.src = frame.src;
+            }
+        }
+
+        function toggleRadioPlay() {
+            isPlayingRadio = !isPlayingRadio;
+            const audio = document.getElementById('live-audio-stream');
+            if (isPlayingRadio) {
+                if (audio) {
+                    audio.src = lofiStation.streamUrl;
+                    audio.play().catch(err => console.log('Audio playback prevented or failed:', err));
+                }
+            } else {
+                if (audio) audio.pause();
+            }
+            updateRadioUI();
+        }
+
+        function updateRadioUI() {
+            const playIcon = document.getElementById('main-play-icon');
+            const playText = document.getElementById('main-play-text');
+            const liveBadge = document.getElementById('radio-live-badge');
+
+            if (playIcon) playIcon.className = `fa-solid ${isPlayingRadio ? 'fa-pause' : 'fa-play'}`;
+            if (playText) playText.innerText = isPlayingRadio ? 'Pause Beats' : 'Play Lofi Beats';
+            if (liveBadge) {
+                if (isPlayingRadio) liveBadge.classList.remove('hidden'), liveBadge.classList.add('flex');
+                else liveBadge.classList.add('hidden'), liveBadge.classList.remove('flex');
+            }
+        }
+
+        // Real-Time Weather Ticker Simulator
+        setInterval(() => {
+            const cupTime = document.getElementById('weather-cupertino-time');
+            const nyTime = document.getElementById('weather-ny-time');
+            const dubaiTime = document.getElementById('weather-dubai-time');
+
+            if (cupTime) {
+                const now = new Date();
+                cupTime.innerText = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(now);
+            }
+            if (nyTime) {
+                const now = new Date();
+                nyTime.innerText = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(now);
+            }
+            if (dubaiTime) {
+                const now = new Date();
+                dubaiTime.innerText = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Dubai', hour: 'numeric', minute: '2-digit', second: '2-digit' }).format(now);
+            }
+        }, 1000);
 
         // Chess Game Logic
         let chessBoard = [];
@@ -835,6 +1422,8 @@
             if (appName === 'chess') resetChessGame();
             if (appName === 'notes') { updateNotesSidebar(); selectNote(currentNoteId); }
             if (appName === 'snake') startSnakeGame();
+            if (appName === 'music') updateRadioUI();
+            if (appName === 'browser') selectBrowserArticle('https://www.wikipedia.org/');
         }
 
         function showCustomMessage(msg) {
