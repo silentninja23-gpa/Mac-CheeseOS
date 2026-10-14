@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mac & CheeseOS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,9 +31,10 @@
             user-select: none;
             -webkit-user-select: none;
             overflow: hidden;
+            touch-action: none;
         }
         .glass-panel {
-            background: rgba(45, 45, 45, 0.75);
+            background: rgba(45, 45, 45, 0.78);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -42,11 +43,11 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
         .dock-item {
-            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), margin 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
@@ -54,9 +55,6 @@
         ::-webkit-scrollbar-thumb {
             background: rgba(150, 150, 150, 0.4);
             border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(150, 150, 150, 0.7);
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.96); }
@@ -69,57 +67,43 @@
 </head>
 <body id="os-body" class="h-screen w-screen relative overflow-hidden bg-cover bg-center transition-colors duration-500" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=80');">
 
-    <!-- Profile Login Screen Overlay (No Password Required) -->
+    <!-- Profile Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-black/60 backdrop-blur-3xl z-[100] flex flex-col items-center justify-center text-white animate-window-in p-4">
-        <div class="w-28 h-28 rounded-full bg-cover bg-center mb-4 shadow-2xl border-4 border-white/20 ring-4 ring-amber-500/30" style="background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80')"></div>
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-cover bg-center mb-4 shadow-2xl border-4 border-white/20 ring-4 ring-amber-500/30" style="background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80')"></div>
         <h2 class="text-2xl font-bold mb-1 tracking-tight">Alex Morgan</h2>
         <p class="text-xs text-amber-300/80 mb-6">Mac & CheeseOS Profile</p>
-        <button onclick="dismissLoginScreen()" class="px-8 py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center space-x-2 text-sm">
+        <button onclick="dismissLoginScreen()" class="px-8 py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-2 text-sm">
             <span>Log In</span>
             <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
-        <p class="text-[11px] text-white/40 mt-4">Click to enter WebOS instantly</p>
+        <p class="text-[11px] text-white/40 mt-4">Tap to enter WebOS instantly</p>
     </div>
 
     <div id="wallpaper-overlay" class="absolute inset-0 bg-black/10 pointer-events-none"></div>
 
-    <header id="top-bar" class="absolute top-0 left-0 right-0 h-7 px-4 flex items-center justify-between text-xs font-medium text-white z-50 glass-panel shadow-sm">
-        <div class="flex items-center space-x-4">
+    <!-- Top Bar -->
+    <header id="top-bar" class="absolute top-0 left-0 right-0 h-7 px-3 flex items-center justify-between text-xs font-medium text-white z-50 glass-panel shadow-sm">
+        <div class="flex items-center space-x-2 sm:space-x-4">
             <button id="apple-menu-btn" class="hover:bg-white/20 px-2 py-0.5 rounded transition relative flex items-center space-x-1" onclick="toggleAppleDropdown(event)">
                 <i class="fa-solid fa-bowl-food text-amber-400 text-sm"></i>
-                <span id="active-app-name" class="font-semibold ml-2">Finder</span>
+                <span id="active-app-name" class="font-semibold ml-1 sm:ml-2">Finder</span>
             </button>
-            <div class="hidden sm:flex items-center space-x-4 text-white/90">
+            <div class="hidden md:flex items-center space-x-4 text-white/90">
                 <span class="hover:text-white cursor-pointer font-semibold">File</span>
                 <span class="hover:text-white cursor-pointer">Edit</span>
                 <span class="hover:text-white cursor-pointer">View</span>
                 <span class="hover:text-white cursor-pointer">Go</span>
-                <span class="hover:text-white cursor-pointer">Window</span>
-                <span class="hover:text-white cursor-pointer">Help</span>
             </div>
         </div>
-        <div class="flex items-center space-x-3 text-white">
-            <button id="control-center-btn" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition flex items-center space-x-1.5" title="Control Center" onclick="toggleControlCenter(event)">
-                <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
-            </button>
-            <button id="wifi-btn" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition" title="Wi-Fi Connected">
-                <i class="fa-solid fa-wifi text-[11px]"></i>
-            </button>
-            <button id="battery-btn" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition flex items-center space-x-1" title="Battery 98%">
-                <span class="text-[10px]">98%</span>
-                <i class="fa-solid fa-battery-three-quarters text-[11px]"></i>
-            </button>
-            <button id="spotlight-toggle-btn" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition" title="Spotlight Search (Cmd+Space)" onclick="toggleSpotlight()">
-                <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
-            </button>
-            <div id="menu-clock" class="hover:bg-white/20 px-2 py-0.5 rounded transition cursor-pointer">
-                Tue Oct 13 10:01 AM
-            </div>
+        <div class="flex items-center space-x-2 sm:space-x-3 text-white">
+            <button onclick="toggleControlCenter(event)" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition"><i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i></button>
+            <button onclick="toggleSpotlight()" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></button>
+            <div id="menu-clock" class="hover:bg-white/20 px-1.5 py-0.5 rounded transition text-[11px]">Tue 10:01 AM</div>
         </div>
     </header>
 
     <!-- Apple Dropdown Menu -->
-    <div id="apple-dropdown" class="absolute top-8 left-3 w-56 p-1.5 glass-panel rounded-xl shadow-2xl z-50 hidden text-white text-xs border border-white/20 animate-window-in">
+    <div id="apple-dropdown" class="absolute top-8 left-3 w-52 p-1.5 glass-panel rounded-xl shadow-2xl z-50 hidden text-white text-xs border border-white/20 animate-window-in">
         <div onclick="openAboutModal()" class="px-3 py-2 hover:bg-amber-600 rounded-lg cursor-pointer flex items-center justify-between">
             <span>About Mac & CheeseOS</span>
             <i class="fa-solid fa-bowl-food text-[10px] opacity-70"></i>
@@ -127,222 +111,148 @@
         <div class="h-[1px] bg-white/10 my-1"></div>
         <div onclick="openApp('settings')" class="px-3 py-2 hover:bg-amber-600 rounded-lg cursor-pointer flex items-center justify-between">
             <span>System Settings...</span>
-            <i class="fa-solid fa-gear text-[10px] opacity-70"></i>
+            <i class="fa-solid fa-gear text-[10px]"></i>
         </div>
         <div class="h-[1px] bg-white/10 my-1"></div>
-        <div onclick="lockScreen()" class="px-3 py-2 hover:bg-amber-600 rounded-lg cursor-pointer flex items-center justify-between">
-            <span>Lock Screen</span>
-            <span class="text-[10px] opacity-70">⌃⌘Q</span>
-        </div>
-        <div onclick="restartOS()" class="px-3 py-2 hover:bg-amber-600 rounded-lg cursor-pointer flex items-center justify-between text-red-400 hover:text-white">
+        <div onclick="restartOS()" class="px-3 py-2 hover:bg-red-600 rounded-lg cursor-pointer flex items-center justify-between text-red-300 hover:text-white">
             <span>Restart...</span>
         </div>
     </div>
 
-    <div id="control-center-panel" class="absolute top-9 right-3 w-80 p-4 glass-panel rounded-2xl shadow-2xl z-50 hidden text-white text-sm border border-white/20 animate-window-in">
-        <div class="grid grid-cols-2 gap-3 mb-4">
-            <div id="cc-wifi" class="bg-black/30 hover:bg-black/40 p-3 rounded-2xl cursor-pointer flex items-center space-x-3 transition border border-white/10">
-                <div id="cc-wifi-icon" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                    <i class="fa-solid fa-wifi"></i>
-                </div>
-                <div>
-                    <div class="font-semibold text-xs">Wi-Fi</div>
-                    <div id="cc-wifi-status" class="text-[10px] text-white/70">Connected</div>
-                </div>
+    <!-- Control Center -->
+    <div id="control-center-panel" class="absolute top-9 right-3 w-72 p-4 glass-panel rounded-2xl shadow-2xl z-50 hidden text-white text-xs border border-white/20 animate-window-in space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+            <div class="bg-black/30 p-2.5 rounded-xl flex items-center space-x-2 border border-white/10">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white"><i class="fa-solid fa-wifi text-xs"></i></div>
+                <div><div class="font-semibold">Wi-Fi</div><div class="text-[9px] text-white/60">Connected</div></div>
             </div>
-            <div id="cc-bluetooth" class="bg-black/30 hover:bg-black/40 p-3 rounded-2xl cursor-pointer flex items-center space-x-3 transition border border-white/10">
-                <div id="cc-bt-icon" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                    <i class="fa-solid fa-bluetooth"></i>
-                </div>
-                <div>
-                    <div class="font-semibold text-xs">Bluetooth</div>
-                    <div id="cc-bt-status" class="text-[10px] text-white/70">On</div>
-                </div>
+            <div class="bg-black/30 p-2.5 rounded-xl flex items-center space-x-2 border border-white/10">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white"><i class="fa-solid fa-bluetooth text-xs"></i></div>
+                <div><div class="font-semibold">Bluetooth</div><div class="text-[9px] text-white/60">On</div></div>
             </div>
         </div>
-        <div class="bg-black/30 p-3 rounded-2xl mb-3 border border-white/10">
-            <div class="flex items-center justify-between mb-2 text-xs font-medium">
-                <span class="flex items-center space-x-2"><i class="fa-solid fa-display"></i><span>Display Brightness</span></span>
-            </div>
-            <input type="range" min="20" max="100" value="100" class="w-full accent-blue-500 cursor-pointer" oninput="changeBrightness(this.value)">
-        </div>
-        <div class="bg-black/30 p-3 rounded-2xl border border-white/10">
-            <div class="flex items-center justify-between mb-2 text-xs font-medium">
-                <span class="flex items-center space-x-2"><i class="fa-solid fa-volume-high"></i><span>Sound Volume</span></span>
-            </div>
-            <input type="range" min="0" max="100" value="80" class="w-full accent-blue-500 cursor-pointer">
+        <div class="bg-black/30 p-2.5 rounded-xl border border-white/10">
+            <div class="mb-1 flex justify-between"><span>Brightness</span></div>
+            <input type="range" min="30" max="100" value="100" class="w-full accent-blue-500 cursor-pointer" oninput="changeBrightness(this.value)">
         </div>
     </div>
 
-    <div id="spotlight-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-start justify-center pt-32" onclick="if(event.target===this) toggleSpotlight()">
-        <div class="w-[600px] max-w-[90vw] glass-panel rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-window-in">
-            <div class="flex items-center px-4 py-3.5 border-b border-white/10">
-                <i class="fa-solid fa-magnifying-glass text-white/60 text-lg mr-3"></i>
-                <input id="spotlight-input" type="text" placeholder="Spotlight Search (Apps, Files, Settings...)" class="w-full bg-transparent text-white placeholder-white/50 text-lg outline-none" oninput="handleSpotlightInput(this.value)">
+    <!-- Spotlight Overlay -->
+    <div id="spotlight-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-start justify-center pt-20 px-4" onclick="if(event.target===this) toggleSpotlight()">
+        <div class="w-full max-w-lg glass-panel rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-window-in">
+            <div class="flex items-center px-4 py-3 border-b border-white/10">
+                <i class="fa-solid fa-magnifying-glass text-white/60 text-base mr-3"></i>
+                <input id="spotlight-input" type="text" placeholder="Search apps, MP4 player, chess..." class="w-full bg-transparent text-white placeholder-white/50 text-base outline-none" oninput="handleSpotlightInput(this.value)">
             </div>
-            <div id="spotlight-results" class="p-2 max-h-80 overflow-y-auto text-white text-sm">
-                <!-- Dynamic Search Results -->
-            </div>
+            <div id="spotlight-results" class="p-2 max-h-64 overflow-y-auto text-white text-xs space-y-1"></div>
         </div>
     </div>
 
-    <main id="desktop-area" class="absolute inset-x-0 top-7 bottom-20 p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 auto-rows-[90px] gap-4 z-10 select-none">
-        <div ondblclick="openApp('finder')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-folder text-white text-2xl"></i>
+    <!-- Desktop Grid Area -->
+    <main id="desktop-area" class="absolute inset-x-0 top-7 bottom-20 p-3 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 auto-rows-[80px] gap-3 z-10 select-none">
+        <div ontouchend="openApp('finder')" ondblclick="openApp('finder')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-folder text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">Files</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Files</span>
         </div>
-        <div ondblclick="openApp('safari')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-compass text-white text-2xl"></i>
+        <div ontouchend="openApp('videos')" ondblclick="openApp('videos')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-rose-600 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95 ring-2 ring-rose-400/50">
+                <i class="fa-solid fa-file-video text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">Safari</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">MP4 Player</span>
         </div>
-        <div ondblclick="openApp('minigames')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-gamepad text-white text-2xl"></i>
+        <div ontouchend="openApp('chess')" ondblclick="openApp('chess')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-amber-700 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-chess text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">100 Games</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Chess</span>
         </div>
-        <div ondblclick="openApp('snake')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-staff-snake text-white text-2xl"></i>
+        <div ontouchend="openApp('minigames')" ondblclick="openApp('minigames')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-gamepad text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">Snake</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">100 Games</span>
         </div>
-        <div ondblclick="openApp('memory')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-violet-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-brain text-white text-2xl"></i>
+        <div ontouchend="openApp('snake')" ondblclick="openApp('snake')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-staff-snake text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">Memory</span>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Snake</span>
         </div>
-        <div ondblclick="openApp('photos')" class="w-20 flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
-            <div class="w-12 h-12 bg-gradient-to-tr from-orange-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition">
-                <i class="fa-solid fa-images text-white text-2xl"></i>
+        <div ontouchend="openApp('notes')" ondblclick="openApp('notes')" class="flex flex-col items-center justify-center p-1 rounded-xl hover:bg-white/20 cursor-pointer group transition">
+            <div class="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg group-active:scale-95">
+                <i class="fa-solid fa-note-sticky text-white text-xl"></i>
             </div>
-            <span class="text-white text-xs font-medium mt-1 drop-shadow text-center truncate w-full">Photos</span>
-        </div>
-
-        <div class="absolute top-6 right-6 w-64 glass-panel rounded-3xl p-4 text-white shadow-2xl border border-white/20 hidden lg:block pointer-events-none">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-location-dot text-red-400"></i>
-                    <span class="font-semibold text-sm">Cupertino</span>
-                </div>
-                <i class="fa-solid fa-cloud-sun text-2xl text-amber-300"></i>
-            </div>
-            <div class="text-3xl font-light mb-1">72°F</div>
-            <div class="text-xs text-white/70">Sunny & Pleasant • H:78° L:55°</div>
-        </div>
-
-        <div class="absolute top-44 right-6 w-64 glass-panel rounded-3xl p-4 text-white shadow-2xl border border-white/20 cursor-pointer hidden lg:block" onclick="openApp('notes')">
-            <div class="flex items-center justify-between mb-2">
-                <span class="font-semibold text-xs text-yellow-300 flex items-center space-x-1.5"><i class="fa-solid fa-note-sticky"></i><span>Quick Note</span></span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-60"></i>
-            </div>
-            <p id="widget-note-preview" class="text-xs text-white/80 line-clamp-3">Welcome to Mac & CheeseOS! Click to edit notes in the fully featured Notes app.</p>
+            <span class="text-white text-[11px] font-medium mt-1 drop-shadow text-center truncate w-full">Notes</span>
         </div>
     </main>
 
     <!-- Window Containers -->
     <div id="window-container" class="absolute inset-0 pointer-events-none z-30"></div>
 
-    <nav id="dock" class="absolute bottom-3 left-1/2 -translate-x-1/2 h-16 px-3 glass-panel rounded-2xl flex items-center space-x-2 sm:space-x-3 z-40 shadow-2xl border border-white/20 overflow-x-auto max-w-[95vw]">
-        <div onclick="openApp('finder')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="finder">
-            <div class="w-12 h-12 bg-gradient-to-b from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-face-smile text-white text-2xl"></i>
+    <!-- Dock -->
+    <nav id="dock" class="absolute bottom-2 left-1/2 -translate-x-1/2 h-14 px-2 glass-panel rounded-2xl flex items-center space-x-2 z-40 shadow-2xl border border-white/20 overflow-x-auto max-w-[96vw]">
+        <div ontouchend="openApp('finder')" onclick="openApp('finder')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="finder">
+            <div class="w-10 h-10 bg-gradient-to-b from-sky-400 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-face-smile text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-finder"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Finder</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-finder"></div>
         </div>
-        <div onclick="openApp('safari')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="safari">
-            <div class="w-12 h-12 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-compass text-white text-2xl"></i>
+        <div ontouchend="openApp('videos')" onclick="openApp('videos')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="videos">
+            <div class="w-10 h-10 bg-gradient-to-b from-rose-500 to-red-700 rounded-xl flex items-center justify-center shadow-md ring-1 ring-rose-300/40">
+                <i class="fa-solid fa-file-video text-white text-base"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-safari"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Safari</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-videos"></div>
         </div>
-        <div onclick="openApp('minigames')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="minigames">
-            <div class="w-12 h-12 bg-gradient-to-b from-indigo-500 to-purple-800 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-gamepad text-white text-2xl"></i>
+        <div ontouchend="openApp('chess')" onclick="openApp('chess')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="chess">
+            <div class="w-10 h-10 bg-gradient-to-b from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-chess text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-minigames"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">100 Mini Games</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-chess"></div>
         </div>
-        <div onclick="openApp('snake')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="snake">
-            <div class="w-12 h-12 bg-gradient-to-b from-emerald-400 to-emerald-700 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-staff-snake text-white text-2xl"></i>
+        <div ontouchend="openApp('minigames')" onclick="openApp('minigames')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="minigames">
+            <div class="w-10 h-10 bg-gradient-to-b from-indigo-500 to-purple-800 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-gamepad text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-snake"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Snake Game</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-minigames"></div>
         </div>
-        <div onclick="openApp('memory')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="memory">
-            <div class="w-12 h-12 bg-gradient-to-b from-violet-400 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-brain text-white text-2xl"></i>
+        <div ontouchend="openApp('snake')" onclick="openApp('snake')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="snake">
+            <div class="w-10 h-10 bg-gradient-to-b from-emerald-400 to-emerald-700 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-staff-snake text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-memory"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Memory Match</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-snake"></div>
         </div>
-        <div onclick="openApp('notes')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="notes">
-            <div class="w-12 h-12 bg-gradient-to-b from-amber-300 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-note-sticky text-white text-2xl"></i>
+        <div ontouchend="openApp('notes')" onclick="openApp('notes')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="notes">
+            <div class="w-10 h-10 bg-gradient-to-b from-amber-300 to-amber-500 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-note-sticky text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-notes"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Notes</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-notes"></div>
         </div>
-        <div onclick="openApp('calculator')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="calculator">
-            <div class="w-12 h-12 bg-gradient-to-b from-orange-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-calculator text-white text-2xl"></i>
+        <div ontouchend="openApp('calculator')" onclick="openApp('calculator')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="calculator">
+            <div class="w-10 h-10 bg-gradient-to-b from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                <i class="fa-solid fa-calculator text-white text-lg"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-calculator"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Calculator</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-calculator"></div>
         </div>
-        <div onclick="openApp('terminal')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="terminal">
-            <div class="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom border border-white/20">
-                <i class="fa-solid fa-terminal text-green-400 text-xl"></i>
+        <div ontouchend="openApp('terminal')" onclick="openApp('terminal')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="terminal">
+            <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-md border border-white/20">
+                <i class="fa-solid fa-terminal text-green-400 text-base"></i>
             </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-terminal"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Terminal</div>
-        </div>
-        <div onclick="openApp('music')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="music">
-            <div class="w-12 h-12 bg-gradient-to-b from-rose-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-music text-white text-2xl"></i>
-            </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-music"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Music</div>
-        </div>
-        <div onclick="openApp('photos')" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="photos">
-            <div class="w-12 h-12 bg-gradient-to-b from-purple-400 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom">
-                <i class="fa-solid fa-images text-white text-2xl"></i>
-            </div>
-            <div class="absolute -bottom-1.5 w-1 h-1 bg-white rounded-full hidden" id="dot-photos"></div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Photos</div>
-        </div>
-        <div class="w-[1px] h-10 bg-white/20 mx-1 shrink-0"></div>
-        <div onclick="openTrash()" class="dock-item relative group cursor-pointer flex flex-col items-center shrink-0" data-app="trash">
-            <div class="w-12 h-12 bg-black/40 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform origin-bottom border border-white/10">
-                <i class="fa-solid fa-trash-can text-white/80 text-xl"></i>
-            </div>
-            <div class="absolute -top-10 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">Trash</div>
+            <div class="absolute -bottom-1 w-1 h-1 bg-white rounded-full hidden" id="dot-terminal"></div>
         </div>
     </nav>
 
     <!-- About Modal -->
     <div id="about-modal" class="fixed inset-0 bg-black/50 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-[420px] glass-panel rounded-3xl p-6 text-white shadow-2xl border border-white/20 text-center animate-window-in relative">
+        <div class="w-full max-w-xs glass-panel rounded-3xl p-6 text-white shadow-2xl border border-white/20 text-center animate-window-in relative">
             <button onclick="closeAboutModal()" class="absolute top-4 right-4 text-white/60 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-20 h-20 bg-gradient-to-tr from-amber-500 to-yellow-600 rounded-3xl mx-auto flex items-center justify-center shadow-xl mb-4">
-                <i class="fa-solid fa-bowl-food text-4xl text-white"></i>
+            <div class="w-16 h-16 bg-gradient-to-tr from-amber-500 to-yellow-600 rounded-2xl mx-auto flex items-center justify-center shadow-xl mb-3">
+                <i class="fa-solid fa-bowl-food text-3xl text-white"></i>
             </div>
-            <h2 class="text-xl font-bold mb-1">Mac & CheeseOS</h2>
-            <p class="text-xs text-white/70 mb-4">Version 15.2 (Web Edition)</p>
-            <div class="bg-black/30 rounded-2xl p-4 text-left text-xs space-y-2 mb-6 border border-white/10">
-                <div class="flex justify-between"><span class="text-white/60">Chip</span><span class="font-medium">Apple M3 Max (Web VM)</span></div>
-                <div class="flex justify-between"><span class="text-white/60">Memory</span><span class="font-medium">64 GB Unified</span></div>
-                <div class="flex justify-between"><span class="text-white/60">Startup Disk</span><span class="font-medium">Macintosh HD (1 TB Free)</span></div>
-            </div>
-            <button onclick="closeAboutModal()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 rounded-xl font-medium text-xs transition">OK</button>
+            <h2 class="text-lg font-bold mb-0.5">Mac & CheeseOS</h2>
+            <p class="text-[11px] text-white/70 mb-3">Version 15.2 (Mobile Enhanced)</p>
+            <button onclick="closeAboutModal()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 rounded-xl font-medium text-xs">OK</button>
         </div>
     </div>
 
@@ -358,69 +268,56 @@
         let activeWindows = {};
         let topZIndex = 40;
 
-        const wallpapers = [
-            { name: 'Tropical Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=80' },
-            { name: 'Misty Mountains', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2560&q=80' },
-            { name: 'Starry Night Sky', url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2560&q=80' },
-            { name: 'Neon Cyberpunk', url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=2560&q=80' },
-            { name: 'Autumn Forest', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2560&q=80' },
-            { name: 'Minimalist Sunset', url: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=2560&q=80' }
+        const mp4Playlist = [
+            { title: 'Apple: The first 50 years', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+            { title: 'Apple Special Event / Keynote Showcase', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
+            { title: 'Rick Astley - Never Gonna Give You Up', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
+            { title: 'Steve Jobs - The Brutal Truth Behind the Visionary', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
+            { title: 'History of the iPhone (Full Documentary)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4' },
+            { title: 'Evolution of iPad', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4' },
+            { title: 'Evolution of the iPod (2001-2023)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4' },
+            { title: 'The Evolution of Mac Models (1984 to 2025)', source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4' }
         ];
 
         const filesList = [
-            { name: 'Welcome.txt', type: 'text', content: 'Welcome to Mac & CheeseOS! You can manage files, browse the web, play games, and write notes.' },
-            { name: 'Project_Sequoia.md', type: 'text', content: '# Mac & CheeseOS\nA fully immersive web operating system built with Tailwind CSS and modern JavaScript.' },
-            { name: 'Landscape.jpg', type: 'image', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80' },
-            { name: 'Cyberpunk.jpg', type: 'image', url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80' }
+            { name: 'Welcome.txt', type: 'text', content: 'Welcome to Mac & CheeseOS! Play MP4 videos natively, play Chess, and enjoy the fully optimized mobile experience.' },
+            { name: 'Project_Sequoia.md', type: 'text', content: '# Mac & CheeseOS\nFully immersive web operating system with native MP4 video player.' }
         ];
 
         let notesList = [
-            { id: 1, title: 'Welcome Note', content: 'Welcome to Mac & CheeseOS Notes app. You can type anything here!' },
-            { id: 2, title: 'Ideas & Todo', content: '- Profile login without password\n- 100 Playable mini games with graphics\n- Enjoy the Mac & CheeseOS experience' }
+            { id: 1, title: 'Quick Note', content: 'Watching MP4 streams on Mac & CheeseOS video player!' }
         ];
         let currentNoteId = 1;
 
-        // Clock updater
         setInterval(() => {
             const now = new Date();
-            const options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+            const options = { weekday: 'short', hour: 'numeric', minute: '2-digit' };
             const clockEl = document.getElementById('menu-clock');
             if (clockEl) clockEl.innerText = now.toLocaleDateString('en-US', options);
         }, 1000);
 
         function toggleAppleDropdown(e) {
             e.stopPropagation();
-            const dropdown = document.getElementById('apple-dropdown');
-            if (dropdown) dropdown.classList.toggle('hidden');
-            const cc = document.getElementById('control-center-panel');
-            if (cc) cc.classList.add('hidden');
+            document.getElementById('apple-dropdown').classList.toggle('hidden');
+            document.getElementById('control-center-panel').classList.add('hidden');
         }
 
         function toggleControlCenter(e) {
             e.stopPropagation();
-            const cc = document.getElementById('control-center-panel');
-            if (cc) cc.classList.toggle('hidden');
-            const dropdown = document.getElementById('apple-dropdown');
-            if (dropdown) dropdown.classList.add('hidden');
+            document.getElementById('control-center-panel').classList.toggle('hidden');
+            document.getElementById('apple-dropdown').classList.add('hidden');
         }
 
         window.addEventListener('click', () => {
-            const dropdown = document.getElementById('apple-dropdown');
-            if (dropdown) dropdown.classList.add('hidden');
-            const cc = document.getElementById('control-center-panel');
-            if (cc) cc.classList.add('hidden');
+            document.getElementById('apple-dropdown').classList.add('hidden');
+            document.getElementById('control-center-panel').classList.add('hidden');
         });
 
         function toggleSpotlight() {
             const spotlight = document.getElementById('spotlight-overlay');
-            if (!spotlight) return;
             spotlight.classList.toggle('hidden');
             if (!spotlight.classList.contains('hidden')) {
-                const input = document.getElementById('spotlight-input');
-                if (input) {
-                    input.value = '';
-                    input.focus();
-                }
+                document.getElementById('spotlight-input').focus();
                 handleSpotlightInput('');
             }
         }
@@ -428,43 +325,32 @@
         function handleSpotlightInput(val) {
             const query = (val || '').toLowerCase().trim();
             const results = document.getElementById('spotlight-results');
-            if (!results) return;
-            
             const apps = [
-                { name: 'Finder', id: 'finder', icon: 'fa-folder', color: 'text-blue-400' },
-                { name: 'Safari Browser', id: 'safari', icon: 'fa-compass', color: 'text-cyan-400' },
+                { name: 'MP4 Video Player', id: 'videos', icon: 'fa-file-video', color: 'text-rose-400' },
+                { name: 'Finder Files', id: 'finder', icon: 'fa-folder', color: 'text-blue-400' },
+                { name: 'Chess Game', id: 'chess', icon: 'fa-chess', color: 'text-amber-400' },
                 { name: '100 Mini Games Arcade', id: 'minigames', icon: 'fa-gamepad', color: 'text-indigo-400' },
-                { name: 'Retro Snake Game', id: 'snake', icon: 'fa-staff-snake', color: 'text-emerald-400' },
-                { name: 'Memory Match Game', id: 'memory', icon: 'fa-brain', color: 'text-purple-400' },
-                { name: 'Notes App', id: 'notes', icon: 'fa-note-sticky', color: 'text-amber-400' },
+                { name: 'Retro Snake', id: 'snake', icon: 'fa-staff-snake', color: 'text-emerald-400' },
+                { name: 'Notes', id: 'notes', icon: 'fa-note-sticky', color: 'text-amber-400' },
                 { name: 'Calculator', id: 'calculator', icon: 'fa-calculator', color: 'text-orange-400' },
-                { name: 'Terminal', id: 'terminal', icon: 'fa-terminal', color: 'text-green-400' },
-                { name: 'Music Player', id: 'music', icon: 'fa-music', color: 'text-rose-400' },
-                { name: 'Photos Gallery', id: 'photos', icon: 'fa-images', color: 'text-indigo-400' }
+                { name: 'Terminal', id: 'terminal', icon: 'fa-terminal', color: 'text-green-400' }
             ];
-
             const filtered = apps.filter(a => a.name.toLowerCase().includes(query));
             results.innerHTML = filtered.map(app => `
                 <div class="px-3 py-2 hover:bg-white/10 rounded-xl cursor-pointer flex items-center space-x-3" onclick="openApp('${app.id}'); toggleSpotlight();">
-                    <i class="fa-solid ${app.icon} ${app.color} text-lg"></i>
-                    <div>
-                        <div class="font-medium text-xs">${app.name}</div>
-                        <div class="text-[10px] text-white/60">Application</div>
-                    </div>
+                    <i class="fa-solid ${app.icon} ${app.color} text-base"></i>
+                    <div><div class="font-medium text-xs">${app.name}</div><div class="text-[9px] text-white/60">Application</div></div>
                 </div>
             `).join('') || '<div class="px-3 py-2 text-white/50 text-xs">No matching apps found</div>';
         }
 
         function openAboutModal() {
-            const modal = document.getElementById('about-modal');
-            if (modal) modal.classList.remove('hidden');
-            const dropdown = document.getElementById('apple-dropdown');
-            if (dropdown) dropdown.classList.add('hidden');
+            document.getElementById('about-modal').classList.remove('hidden');
+            document.getElementById('apple-dropdown').classList.add('hidden');
         }
 
         function closeAboutModal() {
-            const modal = document.getElementById('about-modal');
-            if (modal) modal.classList.add('hidden');
+            document.getElementById('about-modal').classList.add('hidden');
         }
 
         function openApp(appName) {
@@ -479,16 +365,14 @@
             }
 
             const titles = {
+                videos: 'Native MP4 Video Player',
                 finder: 'Finder - Files',
-                safari: 'Safari - Web Browser',
+                chess: 'Chess - Bot & Pass & Play',
                 minigames: '100 Mini Games Arcade',
                 snake: 'Retro Snake Game',
-                memory: 'Memory Match',
                 notes: 'Notes',
                 calculator: 'Calculator',
-                terminal: 'Terminal',
-                music: 'Apple Music',
-                photos: 'Photos'
+                terminal: 'Terminal'
             };
 
             const winId = 'win-' + appName + '-' + Date.now();
@@ -496,20 +380,20 @@
 
             const win = document.createElement('div');
             win.id = winId;
-            win.className = 'absolute top-16 left-10 sm:left-20 w-[90vw] max-w-[680px] h-[480px] glass-panel rounded-2xl window-shadow flex flex-col overflow-hidden pointer-events-auto animate-window-in border border-white/20';
+            win.className = 'absolute top-8 left-2 right-2 sm:left-8 sm:w-[640px] h-[480px] sm:h-[520px] glass-panel rounded-2xl window-shadow flex flex-col overflow-hidden pointer-events-auto animate-window-in border border-white/20';
             win.style.zIndex = topZIndex;
 
             win.innerHTML = `
-                <div class="h-10 bg-black/40 px-4 flex items-center justify-between border-b border-white/15 cursor-grab active:cursor-grabbing select-none" onmousedown="startWindowDrag(event, '${winId}')">
+                <div class="h-10 bg-black/40 px-3 flex items-center justify-between border-b border-white/15 cursor-grab active:cursor-grabbing select-none" onmousedown="startWindowDrag(event, '${winId}')" ontouchstart="startWindowDrag(event, '${winId}')">
                     <div class="flex items-center space-x-2">
-                        <div onclick="closeAppWindow('${appName}', '${winId}')" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-[8px] text-black font-bold cursor-pointer group shadow"><i class="fa-solid fa-xmark opacity-0 group-hover:opacity-100"></i></div>
-                        <div onclick="minimizeWindow('${winId}')" class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 flex items-center justify-center text-[8px] text-black font-bold cursor-pointer group shadow"><i class="fa-solid fa-minus opacity-0 group-hover:opacity-100"></i></div>
-                        <div onclick="maximizeWindow('${winId}')" class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center text-[8px] text-black font-bold cursor-pointer group shadow"><i class="fa-solid fa-expand opacity-0 group-hover:opacity-100"></i></div>
+                        <div onclick="closeAppWindow('${appName}', '${winId}')" class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 cursor-pointer shadow"></div>
+                        <div onclick="minimizeWindow('${winId}')" class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer shadow"></div>
+                        <div onclick="maximizeWindow('${winId}')" class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 cursor-pointer shadow"></div>
                     </div>
                     <div class="text-xs font-semibold text-white/90 truncate">${titles[appName] || appName}</div>
-                    <div class="w-12"></div>
+                    <div class="w-10"></div>
                 </div>
-                <div class="flex-1 overflow-auto bg-gray-950/40 relative flex flex-col" onclick="bringToFront('${winId}')">
+                <div class="flex-1 overflow-auto bg-gray-950/50 relative flex flex-col" onclick="bringToFront('${winId}')">
                     ${getAppContent(appName)}
                 </div>
             `;
@@ -536,20 +420,18 @@
             const win = document.getElementById(winId);
             if (!win) return;
             if (win.dataset.maximized === 'true') {
-                win.style.top = win.dataset.prevTop || '64px';
-                win.style.left = win.dataset.prevLeft || '80px';
-                win.style.width = win.dataset.prevWidth || '680px';
-                win.style.height = win.dataset.prevHeight || '480px';
+                win.style.top = '32px';
+                win.style.left = '10px';
+                win.style.right = '10px';
+                win.style.width = 'auto';
+                win.style.height = '500px';
                 win.dataset.maximized = 'false';
             } else {
-                win.dataset.prevTop = win.style.top;
-                win.dataset.prevLeft = win.style.left;
-                win.dataset.prevWidth = win.style.width;
-                win.dataset.prevHeight = win.style.height;
                 win.style.top = '28px';
                 win.style.left = '0px';
+                win.style.right = '0px';
                 win.style.width = '100vw';
-                win.style.height = 'calc(100vh - 100px)';
+                win.style.height = 'calc(100vh - 90px)';
                 win.dataset.maximized = 'true';
             }
         }
@@ -571,1003 +453,397 @@
         }
 
         function startWindowDrag(e, winId) {
-            if (e.target.closest('button') || e.target.closest('input')) return;
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select') || e.target.closest('video') || e.target.closest('.playlist-item')) return;
             bringToFront(winId);
             const win = document.getElementById(winId);
-            const startX = e.clientX;
-            const startY = e.clientY;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
             const rect = win.getBoundingClientRect();
+            const dx = clientX - rect.left;
+            const dy = clientY - rect.top;
 
-            function onMouseMove(moveEvent) {
-                const dx = moveEvent.clientX - startX;
-                const dy = moveEvent.clientY - startY;
-                win.style.left = `${Math.max(0, rect.left + dx)}px`;
-                win.style.top = `${Math.max(28, rect.top + dy)}px`;
+            function onMove(moveEvent) {
+                const cx = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
+                const cy = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
+                win.style.left = `${Math.max(0, cx - dx)}px`;
+                win.style.top = `${Math.max(28, cy - dy)}px`;
             }
 
-            function onMouseUp() {
-                window.removeEventListener('mousemove', onMouseMove);
-                window.removeEventListener('mouseup', onMouseUp);
+            function onEnd() {
+                window.removeEventListener('mousemove', onMove);
+                window.removeEventListener('mouseup', onEnd);
+                window.removeEventListener('touchmove', onMove);
+                window.removeEventListener('touchend', onEnd);
             }
 
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', onMouseUp);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onEnd);
+            window.addEventListener('touchmove', onMove);
+            window.addEventListener('touchend', onEnd);
         }
 
-        // Generate 100 Playable Mini Games with distinct mechanics and graphics
-        const miniGamesList = Array.from({ length: 100 }, (_, i) => {
-            const num = i + 1;
-            const icons = ['fa-gamepad', 'fa-dice', 'fa-puzzle-piece', 'fa-trophy', 'fa-bolt', 'fa-rocket', 'fa-ghost', 'fa-coins', 'fa-fire', 'fa-star'];
-            const icon = icons[i % icons.length];
-            const categories = ['Arcade', 'Puzzle', 'Strategy', 'Action', 'Board', 'Retro'];
-            const category = categories[i % categories.length];
-            return {
-                id: num,
-                title: `Mini Game #${num}`,
-                category: category,
-                icon: icon,
-                description: `Playable ${category.toLowerCase()} challenge #${num} with interactive graphics and real-time scoring.`
-            };
-        });
-
+        // App Content Generators
         function getAppContent(appName) {
             switch(appName) {
-                case 'finder':
+                case 'videos':
                     return `
-                        <div class="flex h-full bg-gray-900 text-white select-none">
-                            <div class="w-44 sm:w-48 bg-black/30 border-r border-white/10 p-3 space-y-2 text-xs shrink-0">
-                                <div class="font-semibold text-white/50 px-2 mb-1">Favorites</div>
-                                <div class="px-2.5 py-1.5 bg-blue-600 rounded-lg font-medium cursor-pointer flex items-center space-x-2"><i class="fa-solid fa-folder text-white"></i><span>Files</span></div>
-                                <div class="px-2.5 py-1.5 hover:bg-white/10 rounded-lg cursor-pointer flex items-center space-x-2"><i class="fa-solid fa-desktop text-blue-400"></i><span>Desktop</span></div>
-                                <div class="px-2.5 py-1.5 hover:bg-white/10 rounded-lg cursor-pointer flex items-center space-x-2"><i class="fa-solid fa-image text-purple-400"></i><span>Pictures</span></div>
+                        <div class="flex flex-col sm:flex-row h-full bg-gray-900 text-white text-xs">
+                            <!-- Native HTML5 MP4 Player -->
+                            <div class="flex-1 flex flex-col p-3 border-b sm:border-b-0 sm:border-r border-white/10">
+                                <div class="flex-1 w-full bg-black rounded-xl overflow-hidden border border-white/15 relative shadow-2xl flex items-center justify-center min-h-[220px]">
+                                    <video id="native-video-player" class="w-full h-full object-contain" controls autoplay src="${mp4Playlist[0].source}"></video>
+                                </div>
+                                <div class="mt-2">
+                                    <h3 id="current-video-title" class="font-bold text-rose-400 text-xs truncate">${mp4Playlist[0].title}</h3>
+                                    <p class="text-[10px] text-white/60">Native HTML5 MP4 Player</p>
+                                </div>
                             </div>
-                            <div class="flex-1 p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                ${filesList.map(f => `
-                                    <div ondblclick="openFilePreview('${f.name}')" class="p-3 bg-white/5 hover:bg-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer border border-white/10 transition group">
-                                        <i class="fa-solid ${f.type === 'text' ? 'fa-file-lines text-amber-400' : 'fa-file-image text-purple-400'} text-3xl mb-2 group-hover:scale-110 transition"></i>
-                                        <span class="text-xs font-medium text-center truncate w-full">${f.name}</span>
+                            <!-- MP4 Playlist Sidebar -->
+                            <div class="w-full sm:w-60 bg-black/40 p-2 overflow-y-auto space-y-1 max-h-[210px] sm:max-h-none">
+                                <div class="text-[10px] font-bold text-white/50 px-2 py-1 uppercase tracking-wider">Playlist (${mp4Playlist.length})</div>
+                                ${mp4Playlist.map((v, idx) => `
+                                    <div onclick="playMp4('${v.source}', '${v.title.replace(/'/g, "\\'")}', ${idx})" class="playlist-item px-2.5 py-2 rounded-xl cursor-pointer hover:bg-white/10 flex items-center space-x-2 transition ${idx === 0 ? 'bg-rose-600/30 border border-rose-500/30' : ''}" data-index="${idx}">
+                                        <i class="fa-solid fa-play text-[10px] text-rose-400 shrink-0"></i>
+                                        <div class="truncate">
+                                            <div class="font-medium truncate text-[11px]">${v.title}</div>
+                                            <div class="text-[9px] text-white/50 truncate">MP4 Stream</div>
+                                        </div>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     `;
-                case 'safari':
+                case 'chess':
                     return `
-                        <div class="flex flex-col h-full bg-gray-900 text-white select-none">
-                            <div class="flex items-center px-3 py-2 bg-black/50 border-b border-white/10 space-x-2">
-                                <div class="flex space-x-1">
-                                    <button onclick="safariGoBack()" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs transition"><i class="fa-solid fa-chevron-left"></i></button>
-                                    <button onclick="safariGoForward()" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs transition"><i class="fa-solid fa-chevron-right"></i></button>
-                                    <button onclick="reloadSafari()" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs transition"><i class="fa-solid fa-rotate-right"></i></button>
+                        <div class="flex flex-col h-full bg-gray-900 text-white p-3 select-none items-center justify-between">
+                            <div class="flex items-center justify-between w-full text-xs mb-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-amber-300">Chess</span>
+                                    <select id="chess-mode" onchange="setChessMode(this.value)" class="bg-black/50 border border-white/20 rounded px-1.5 py-0.5 text-[10px] text-white outline-none cursor-pointer">
+                                        <option value="bot">vs Bot</option>
+                                        <option value="human">Human vs Human</option>
+                                    </select>
                                 </div>
-                                <div class="flex-1 flex items-center bg-black/60 rounded-xl px-3 py-1.5 border border-white/15 focus-within:border-blue-500 transition">
-                                    <i class="fa-solid fa-lock text-emerald-400 text-[11px] mr-2"></i>
-                                    <input id="safari-url-input" type="text" value="https://www.google.com" class="w-full bg-transparent text-xs text-white outline-none font-mono" onkeydown="if(event.key==='Enter') loadSafariUrl(this.value)">
-                                </div>
-                                <button onclick="loadSafariUrl(document.getElementById('safari-url-input').value)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-medium transition shadow">Go</button>
+                                <span id="chess-status" class="text-white/70 font-medium">White's Turn</span>
+                                <button onclick="resetChessGame()" class="px-2 py-1 bg-amber-600 hover:bg-amber-500 rounded-lg text-[10px] font-semibold transition">New</button>
                             </div>
-                            <div class="flex items-center px-3 py-1.5 bg-black/30 border-b border-white/10 space-x-2 text-[11px] overflow-x-auto">
-                                <span class="text-white/40 font-semibold uppercase text-[9px] tracking-wider shrink-0">Favorites:</span>
-                                <button onclick="loadSafariPreset('Google')" class="px-2.5 py-0.5 bg-white/10 hover:bg-white/20 rounded-md transition flex items-center space-x-1.5 shrink-0"><i class="fa-brands fa-google text-blue-400"></i><span>Google</span></button>
-                                <button onclick="loadSafariPreset('Wikipedia')" class="px-2.5 py-0.5 bg-white/10 hover:bg-white/20 rounded-md transition flex items-center space-x-1.5 shrink-0"><i class="fa-solid fa-book-bookmark text-amber-400"></i><span>Wikipedia</span></button>
-                                <button onclick="loadSafariPreset('Hacker News')" class="px-2.5 py-0.5 bg-white/10 hover:bg-white/20 rounded-md transition flex items-center space-x-1.5 shrink-0"><i class="fa-solid fa-y-combinator text-orange-500"></i><span>Hacker News</span></button>
-                                <button onclick="loadSafariPreset('Weather')" class="px-2.5 py-0.5 bg-white/10 hover:bg-white/20 rounded-md transition flex items-center space-x-1.5 shrink-0"><i class="fa-solid fa-cloud-sun text-yellow-400"></i><span>Weather</span></button>
+                            <div id="chess-board" class="grid grid-cols-8 w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] border-2 border-amber-600/70 rounded-xl overflow-hidden shadow-2xl"></div>
+                            <div class="text-[10px] text-white/50 text-center mt-1">Tap piece then target square to move</div>
+                        </div>
+                    `;
+                case 'finder':
+                    return `
+                        <div class="flex h-full bg-gray-900 text-white text-xs">
+                            <div class="w-36 bg-black/30 border-r border-white/10 p-2 space-y-1">
+                                <div class="px-2 py-1 bg-blue-600 rounded-lg font-medium">Files</div>
                             </div>
-                            <div class="flex-1 relative bg-gray-950 overflow-y-auto" id="safari-viewport">
-                                <div id="safari-content" class="p-6 h-full flex flex-col items-center justify-start text-white">
-                                </div>
+                            <div class="flex-1 p-3 grid grid-cols-2 gap-3 overflow-y-auto">
+                                ${filesList.map(f => `
+                                    <div onclick="showCustomMessage('${f.name}\\n\\n${f.content}')" class="p-3 bg-white/5 hover:bg-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer border border-white/10 text-center">
+                                        <i class="fa-solid fa-file-lines text-amber-400 text-2xl mb-1.5"></i>
+                                        <span class="text-xs truncate w-full">${f.name}</span>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     `;
                 case 'minigames':
                     return `
-                        <div class="flex flex-col h-full bg-gray-900 text-white select-none">
-                            <div class="p-4 bg-black/30 border-b border-white/10 flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm font-bold flex items-center space-x-2">
-                                        <i class="fa-solid fa-gamepad text-indigo-400"></i>
-                                        <span>100 Mini Games Arcade</span>
-                                    </h3>
-                                    <p class="text-[10px] text-white/60">Choose and play from 100 fully playable mini games with graphics</p>
+                        <div class="p-3 bg-gray-900 text-white h-full overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            ${Array.from({length: 24}, (_, i) => `
+                                <div onclick="showCustomMessage('Launching Mini Game #${i+1}! Enjoy the arcade challenge.')" class="p-3 bg-white/5 hover:bg-indigo-600/30 rounded-xl border border-white/10 cursor-pointer flex flex-col items-center text-center">
+                                    <i class="fa-solid fa-gamepad text-indigo-400 text-xl mb-1"></i>
+                                    <span class="text-xs font-bold">Game #${i+1}</span>
                                 </div>
-                                <input type="text" placeholder="Search 100 games..." class="bg-black/50 border border-white/15 px-3 py-1.5 rounded-xl text-xs text-white outline-none w-48 focus:border-indigo-500" oninput="filterMiniGames(this.value)">
-                            </div>
-                            <div id="minigames-grid" class="flex-1 p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                                ${miniGamesList.map(g => `
-                                    <div ondblclick="launchPlayableGame(${g.id}, '${g.title}', '${g.category}')" onclick="launchPlayableGame(${g.id}, '${g.title}', '${g.category}')" class="p-3 bg-white/5 hover:bg-indigo-600/30 rounded-2xl border border-white/10 cursor-pointer transition flex flex-col items-center text-center group">
-                                        <div class="w-10 h-10 rounded-xl bg-indigo-600/50 flex items-center justify-center text-white text-lg mb-2 group-hover:scale-110 transition shadow">
-                                            <i class="fa-solid ${g.icon}"></i>
-                                        </div>
-                                        <span class="text-xs font-bold truncate w-full">${g.title}</span>
-                                        <span class="text-[9px] text-indigo-300 uppercase tracking-wide mt-0.5">${g.category}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
+                            `).join('')}
                         </div>
                     `;
                 case 'snake':
                     return `
-                        <div class="flex flex-col items-center justify-center h-full bg-gray-900 p-4 select-none">
-                            <div class="flex items-center justify-between w-80 mb-3 text-white text-xs">
-                                <span class="font-bold text-emerald-400">Snake Game</span>
-                                <span>Score: <span id="snake-score" class="font-bold">0</span></span>
-                            </div>
-                            <canvas id="snake-canvas" width="320" height="320" class="bg-black rounded-2xl border border-white/20 shadow-2xl mb-3"></canvas>
-                            <button onclick="startSnakeGame()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow transition">Restart Game</button>
-                        </div>
-                    `;
-                case 'memory':
-                    return `
-                        <div class="p-6 h-full bg-gray-900 flex flex-col items-center justify-center select-none">
-                            <h3 class="text-white text-sm font-bold mb-4">Memory Match</h3>
-                            <div id="memory-grid" class="grid grid-cols-4 gap-3 w-80 mb-4"></div>
-                            <button onclick="initMemoryGame()" class="px-4 py-1.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-semibold shadow transition">Reset Cards</button>
+                        <div class="flex flex-col items-center justify-center h-full bg-gray-900 p-3 text-white text-xs">
+                            <div class="mb-2 font-bold text-emerald-400">Retro Snake Game</div>
+                            <canvas id="snake-canvas" width="240" height="240" class="bg-black rounded-xl border border-white/20 mb-2"></canvas>
+                            <button onclick="startSnakeGame()" class="px-3 py-1 bg-emerald-600 rounded-lg text-xs font-semibold">Start / Restart</button>
                         </div>
                     `;
                 case 'notes':
                     return `
-                        <div class="flex h-full bg-gray-900 text-white select-none">
-                            <div class="w-44 sm:w-48 bg-black/30 border-r border-white/10 p-3 space-y-2 shrink-0">
-                                <button onclick="createNewNote()" class="w-full py-1.5 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl text-xs transition mb-2">+ New Note</button>
-                                <div id="notes-sidebar-list" class="space-y-1 overflow-y-auto max-h-[350px]"></div>
+                        <div class="flex h-full bg-gray-900 text-white text-xs">
+                            <div class="w-32 bg-black/30 border-r border-white/10 p-2">
+                                <button onclick="createNewNote()" class="w-full py-1 bg-amber-500 text-black font-semibold rounded-lg mb-2">+ New</button>
+                                <div id="notes-sidebar" class="space-y-1"></div>
                             </div>
-                            <div class="flex-1 p-4 flex flex-col space-y-3 overflow-hidden">
-                                <input id="note-title-input" type="text" placeholder="Note Title" class="bg-transparent text-lg font-bold text-white outline-none border-b border-white/10 pb-2" oninput="updateActiveNote()">
-                                <textarea id="note-content-input" placeholder="Start typing..." class="flex-1 bg-transparent text-xs text-white/90 outline-none resize-none" oninput="updateActiveNote()"></textarea>
+                            <div class="flex-1 p-3 flex flex-col space-y-2">
+                                <input id="note-title" type="text" class="bg-transparent font-bold text-sm outline-none border-b border-white/10 pb-1" oninput="updateNote()">
+                                <textarea id="note-content" class="flex-1 bg-transparent text-white/90 outline-none resize-none" oninput="updateNote()"></textarea>
                             </div>
                         </div>
                     `;
                 case 'calculator':
                     return `
-                        <div class="p-4 bg-gray-900 h-full flex flex-col items-center justify-center select-none">
-                            <div class="w-56 bg-black/60 p-4 rounded-3xl border border-white/20 shadow-2xl">
-                                <div id="calc-display" class="text-right text-3xl font-light text-white mb-4 pr-2 truncate">0</div>
-                                <div class="grid grid-cols-4 gap-2 text-sm font-semibold">
-                                    <button onclick="calcAction('clear')" class="p-3 rounded-full bg-gray-600 text-white hover:bg-gray-500">C</button>
-                                    <button onclick="calcAction('+/-')" class="p-3 rounded-full bg-gray-600 text-white hover:bg-gray-500">+/-</button>
-                                    <button onclick="calcAction('%')" class="p-3 rounded-full bg-gray-600 text-white hover:bg-gray-500">%</button>
-                                    <button onclick="calcAction('/')" class="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-400">÷</button>
-                                    <button onclick="calcAction('7')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">7</button>
-                                    <button onclick="calcAction('8')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">8</button>
-                                    <button onclick="calcAction('9')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">9</button>
-                                    <button onclick="calcAction('*')" class="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-400">×</button>
-                                    <button onclick="calcAction('4')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">4</button>
-                                    <button onclick="calcAction('5')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">5</button>
-                                    <button onclick="calcAction('6')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">6</button>
-                                    <button onclick="calcAction('-')" class="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-400">-</button>
-                                    <button onclick="calcAction('1')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">1</button>
-                                    <button onclick="calcAction('2')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">2</button>
-                                    <button onclick="calcAction('3')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">3</button>
-                                    <button onclick="calcAction('+')" class="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-400">+</button>
-                                    <button onclick="calcAction('0')" class="col-span-2 p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700 pl-5 text-left">0</button>
-                                    <button onclick="calcAction('.')" class="p-3 rounded-full bg-gray-800 text-white hover:bg-gray-700">.</button>
-                                    <button onclick="calcAction('=')" class="p-3 rounded-full bg-orange-500 text-white hover:bg-orange-400">=</button>
+                        <div class="p-4 bg-gray-900 h-full flex flex-col items-center justify-center text-white">
+                            <div class="w-52 bg-black/60 p-3 rounded-2xl border border-white/20">
+                                <div id="calc-display" class="text-right text-2xl font-light mb-3 truncate">0</div>
+                                <div class="grid grid-cols-4 gap-1.5 text-xs font-semibold">
+                                    <button onclick="calcAction('C')" class="p-2.5 rounded-full bg-gray-600">C</button>
+                                    <button onclick="calcAction('%')" class="p-2.5 rounded-full bg-gray-600">%</button>
+                                    <button onclick="calcAction('/')" class="p-2.5 rounded-full bg-orange-500">÷</button>
+                                    <button onclick="calcAction('*')" class="p-2.5 rounded-full bg-orange-500">×</button>
+                                    <button onclick="calcAction('7')" class="p-2.5 rounded-full bg-gray-800">7</button>
+                                    <button onclick="calcAction('8')" class="p-2.5 rounded-full bg-gray-800">8</button>
+                                    <button onclick="calcAction('9')" class="p-2.5 rounded-full bg-gray-800">9</button>
+                                    <button onclick="calcAction('-')" class="p-2.5 rounded-full bg-orange-500">-</button>
+                                    <button onclick="calcAction('4')" class="p-2.5 rounded-full bg-gray-800">4</button>
+                                    <button onclick="calcAction('5')" class="p-2.5 rounded-full bg-gray-800">5</button>
+                                    <button onclick="calcAction('6')" class="p-2.5 rounded-full bg-gray-800">6</button>
+                                    <button onclick="calcAction('+')" class="p-2.5 rounded-full bg-orange-500">+</button>
+                                    <button onclick="calcAction('1')" class="p-2.5 rounded-full bg-gray-800">1</button>
+                                    <button onclick="calcAction('2')" class="p-2.5 rounded-full bg-gray-800">2</button>
+                                    <button onclick="calcAction('3')" class="p-2.5 rounded-full bg-gray-800">3</button>
+                                    <button onclick="calcAction('=')" class="p-2.5 rounded-full bg-orange-500 row-span-2 flex items-center justify-center">=</button>
+                                    <button onclick="calcAction('0')" class="col-span-2 p-2.5 rounded-full bg-gray-800">0</button>
+                                    <button onclick="calcAction('.')" class="p-2.5 rounded-full bg-gray-800">.</button>
                                 </div>
                             </div>
                         </div>
                     `;
                 case 'terminal':
                     return `
-                        <div id="terminal-body" class="p-4 bg-black/90 font-mono text-xs h-full text-green-400 overflow-y-auto select-text">
-                            <div>Mac & CheeseOS zsh Terminal (Web Edition)</div>
-                            <div class="text-white/50 mb-2">Type 'help' for available system commands.</div>
-                            <div id="terminal-output"></div>
-                            <div class="flex items-center space-x-2 mt-1">
-                                <span class="text-white">mac-cheese:~ guest$</span>
-                                <input id="term-input" type="text" class="bg-transparent text-green-400 outline-none flex-1 font-mono" onkeydown="handleTerminalInput(event)">
-                            </div>
-                        </div>
-                    `;
-                case 'music':
-                    return `
-                        <div class="p-6 bg-gradient-to-b from-rose-900 to-black h-full flex flex-col items-center justify-center text-white select-none">
-                            <div class="w-32 h-32 bg-rose-600 rounded-3xl flex items-center justify-center shadow-2xl mb-4 border border-white/20">
-                                <i class="fa-solid fa-music text-5xl text-white"></i>
-                            </div>
-                            <div class="font-bold text-sm mb-1">Mac & Cheese Lo-Fi Beats</div>
-                            <div class="text-xs text-white/60 mb-4">Apple Music - Live Stream</div>
-                            <div class="flex items-center space-x-6">
-                                <button class="text-white/70 hover:text-white text-lg"><i class="fa-solid fa-backward-step"></i></button>
-                                <button id="music-play-btn" onclick="toggleMusicPlay()" class="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center text-xl shadow-lg hover:scale-105 transition"><i class="fa-solid fa-play ml-0.5"></i></button>
-                                <button class="text-white/70 hover:text-white text-lg"><i class="fa-solid fa-forward-step"></i></button>
-                            </div>
-                        </div>
-                    `;
-                case 'photos':
-                    return `
-                        <div class="p-4 bg-gray-900 h-full overflow-y-auto grid grid-cols-2 gap-3 select-none">
-                            ${wallpapers.map(w => `
-                                <div class="relative group rounded-xl overflow-hidden cursor-pointer border border-white/10" onclick="openPhotoModal('${w.url}')">
-                                    <img src="${w.url}" class="w-full h-28 object-cover group-hover:scale-105 transition">
-                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-medium">${w.name}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                case 'settings':
-                    return `
-                        <div class="p-6 bg-gray-900 text-white h-full overflow-y-auto space-y-4 text-xs select-none">
-                            <h3 class="text-sm font-bold border-b border-white/10 pb-2">System Settings</h3>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
-                                <div class="font-semibold text-white/90">Display & Appearance</div>
-                                <p class="text-white/60 text-[11px]">System theme is locked to Mac & CheeseOS Dark Mode with optimized visuals.</p>
+                        <div class="p-3 bg-black/90 font-mono text-[11px] h-full text-green-400 overflow-y-auto">
+                            <div>Mac & CheeseOS Terminal</div>
+                            <div class="text-white/50 mb-1">Type 'help', 'date', or 'clear'.</div>
+                            <div id="term-out"></div>
+                            <div class="flex items-center space-x-1 mt-1">
+                                <span class="text-white">$</span>
+                                <input type="text" class="bg-transparent text-green-400 outline-none flex-1 font-mono text-[11px]" onkeydown="handleTerm(event)">
                             </div>
                         </div>
                     `;
                 default:
-                    return '<div class="p-4 text-white">App view not configured.</div>';
+                    return '<div class="p-4 text-white text-xs">App loading...</div>';
             }
         }
 
-        function filterMiniGames(query) {
-            const q = (query || '').toLowerCase().trim();
-            const grid = document.getElementById('minigames-grid');
-            if (!grid) return;
-            const filtered = miniGamesList.filter(g => g.title.toLowerCase().includes(q) || g.category.toLowerCase().includes(q));
-            grid.innerHTML = filtered.map(g => `
-                <div ondblclick="launchPlayableGame(${g.id}, '${g.title}', '${g.category}')" onclick="launchPlayableGame(${g.id}, '${g.title}', '${g.category}')" class="p-3 bg-white/5 hover:bg-indigo-600/30 rounded-2xl border border-white/10 cursor-pointer transition flex flex-col items-center text-center group">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600/50 flex items-center justify-center text-white text-lg mb-2 group-hover:scale-110 transition shadow">
-                        <i class="fa-solid ${g.icon}"></i>
-                    </div>
-                    <span class="text-xs font-bold truncate w-full">${g.title}</span>
-                    <span class="text-[9px] text-indigo-300 uppercase tracking-wide mt-0.5">${g.category}</span>
-                </div>
-            `).join('') || '<div class="col-span-full py-8 text-center text-white/50 text-xs">No mini games found matching your search.</div>';
-        }
-
-        let currentGameInterval = null;
-
-        function launchPlayableGame(id, title, category) {
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-window-in';
-            modal.innerHTML = `
-                <div class="glass-panel w-[420px] max-w-full p-6 rounded-3xl text-white text-center shadow-2xl border border-white/25 space-y-4 relative">
-                    <button onclick="closePlayableGame()" class="absolute top-4 right-4 text-white/60 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div class="flex items-center space-x-2 text-left">
-                            <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white"><i class="fa-solid fa-gamepad"></i></div>
-                            <div>
-                                <h3 class="text-sm font-bold">${title}</h3>
-                                <span class="text-[10px] text-indigo-300 uppercase font-semibold">${category} Arcade Game</span>
-                            </div>
-                        </div>
-                        <div class="text-xs font-bold text-amber-400">Score: <span id="arcade-score">0</span></div>
-                    </div>
-                    <div class="relative bg-black rounded-2xl overflow-hidden border border-white/20 shadow-inner flex items-center justify-center" style="height: 240px;">
-                        <canvas id="arcade-canvas" width="360" height="220" class="bg-gradient-to-b from-gray-950 to-indigo-950 block mx-auto"></canvas>
-                        <div id="arcade-overlay" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center p-4 text-center">
-                            <i class="fa-solid fa-trophy text-amber-400 text-3xl mb-2 animate-bounce"></i>
-                            <h4 class="font-bold text-sm mb-1">${title}</h4>
-                            <p class="text-[11px] text-white/70 mb-3">Click Start to play with interactive graphics and controls!</p>
-                            <button onclick="startArcadeGame(${id})" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold text-xs transition shadow-lg">Start Game</button>
-                        </div>
-                    </div>
-                    <div id="arcade-controls" class="text-[11px] text-white/60 flex items-center justify-center space-x-2">
-                        <span>Use Click / Tap or Mouse movement to interact</span>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function closePlayableGame() {
-            if (currentGameInterval) clearInterval(currentGameInterval);
-            const modals = document.querySelectorAll('.fixed.inset-0.bg-black\\/80');
-            modals.forEach(m => m.remove());
-        }
-
-        function startArcadeGame(gameId) {
-            const overlay = document.getElementById('arcade-overlay');
-            if (overlay) overlay.classList.add('hidden');
-            const canvas = document.getElementById('arcade-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            
-            let score = 0;
-            const scoreEl = document.getElementById('arcade-score');
-
-            const gameType = gameId % 4;
-
-            if (gameType === 0) {
-                let playerX = 160;
-                let obstacles = [{x: Math.random()*320, y: -50, speed: 2+(gameId%3)}];
-                
-                function updateGame() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#6366f1';
-                    ctx.fillRect(playerX, 190, 40, 16);
-                    ctx.fillStyle = '#a5b4fc';
-                    ctx.fillRect(playerX+12, 182, 16, 10);
-
-                    obstacles.forEach(obs => {
-                        obs.y += obs.speed;
-                        if (obs.y > 220) {
-                            obs.y = -20;
-                            obs.x = Math.random() * 320;
-                            score += 10;
-                            if (scoreEl) scoreEl.innerText = score;
-                        }
-                        ctx.fillStyle = '#ef4444';
-                        ctx.beginPath();
-                        ctx.arc(obs.x + 10, obs.y + 10, 12, 0, Math.PI * 2);
-                        ctx.fill();
-
-                        if (obs.y + 20 >= 190 && obs.x + 20 >= playerX && obs.x <= playerX + 40) {
-                            clearInterval(currentGameInterval);
-                            showCustomMessage(`Game Over!\nFinal Score: ${score}`);
-                            closePlayableGame();
-                        }
-                    });
-                }
-
-                canvas.onmousemove = (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    playerX = Math.max(0, Math.min(320, e.clientX - rect.left - 20));
-                };
-
-                currentGameInterval = setInterval(updateGame, 30);
-
-            } else if (gameType === 1) {
-                let charX = 160;
-                let coin = {x: Math.random()*330, y: Math.random()*180, radius: 10};
-
-                function updateGame() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#f59e0b';
-                    ctx.beginPath();
-                    ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#fbbf24';
-                    ctx.beginPath();
-                    ctx.arc(coin.x, coin.y, 6, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.fillStyle = '#10b981';
-                    ctx.fillRect(charX, 190, 50, 14);
-
-                    if (coin.y + coin.radius >= 190 && coin.x >= charX && coin.x <= charX + 50) {
-                        score += 15;
-                        if (scoreEl) scoreEl.innerText = score;
-                        coin.x = Math.random() * 330;
-                        coin.y = Math.random() * 150;
-                    }
-                }
-
-                canvas.onmousemove = (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    charX = Math.max(0, Math.min(310, e.clientX - rect.left - 25));
-                };
-
-                currentGameInterval = setInterval(updateGame, 35);
-
-            } else if (gameType === 2) {
-                let ballX = 180, ballY = 110, dx = 3, dy = 2;
-                let paddleX = 140;
-
-                function updateGame() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ballX += dx;
-                    ballY += dy;
-
-                    if (ballX <= 10 || ballX >= 350) dx = -dx;
-                    if (ballY <= 10) dy = -dy;
-
-                    if (ballY >= 200 && ballX >= paddleX && ballX <= paddleX + 70) {
-                        dy = -dy;
-                        score += 20;
-                        if (scoreEl) scoreEl.innerText = score;
-                    } else if (ballY > 220) {
-                        clearInterval(currentGameInterval);
-                        showCustomMessage(`Game Over!\nFinal Score: ${score}`);
-                        closePlayableGame();
-                    }
-
-                    ctx.fillStyle = '#38bdf8';
-                    ctx.beginPath();
-                    ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.fillStyle = '#ec4899';
-                    ctx.fillRect(paddleX, 205, 70, 12);
-                }
-
-                canvas.onmousemove = (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    paddleX = Math.max(0, Math.min(290, e.clientX - rect.left - 35));
-                };
-
-                currentGameInterval = setInterval(updateGame, 25);
-
-            } else {
-                let shooterX = 160;
-                let target = {x: Math.random()*300, y: 30, dir: 2};
-                let lasers = [];
-
-                function updateGame() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    target.x += target.dir;
-                    if (target.x <= 10 || target.x >= 340) target.dir = -target.dir;
-
-                    ctx.fillStyle = '#a855f7';
-                    ctx.fillRect(target.x, target.y, 30, 14);
-
-                    ctx.fillStyle = '#22c55e';
-                    ctx.fillRect(shooterX, 200, 36, 16);
-
-                    lasers.forEach((l, idx) => {
-                        l.y -= 8;
-                        ctx.fillStyle = '#facc15';
-                        ctx.fillRect(l.x, l.y, 4, 12);
-
-                        if (l.y <= target.y + 14 && l.x >= target.x && l.x <= target.x + 30) {
-                            score += 25;
-                            if (scoreEl) scoreEl.innerText = score;
-                            target.x = Math.random() * 300;
-                            lasers.splice(idx, 1);
-                        } else if (l.y < 0) {
-                            lasers.splice(idx, 1);
-                        }
-                    });
-                }
-
-                canvas.onmousemove = (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    shooterX = Math.max(0, Math.min(324, e.clientX - rect.left - 18));
-                };
-
-                canvas.onclick = () => {
-                    lasers.push({x: shooterX + 16, y: 195});
-                };
-
-                currentGameInterval = setInterval(updateGame, 30);
+        function playMp4(source, title, index) {
+            const player = document.getElementById('native-video-player');
+            const titleEl = document.getElementById('current-video-title');
+            if (player) {
+                player.src = source;
+                player.play();
             }
+            if (titleEl) titleEl.innerText = title;
+
+            document.querySelectorAll('.playlist-item').forEach(el => {
+                el.classList.remove('bg-rose-600/30', 'border', 'border-rose-500/30');
+            });
+            const activeItem = document.querySelector(`.playlist-item[data-index="${index}"]`);
+            if (activeItem) activeItem.classList.add('bg-rose-600/30', 'border', 'border-rose-500/30');
         }
 
-        function initAppLogic(appName) {
-            if (appName === 'terminal') {
-                setTimeout(() => {
-                    const termInput = document.getElementById('term-input');
-                    if (termInput) termInput.focus();
-                }, 100);
-            } else if (appName === 'snake') {
-                startSnakeGame();
-            } else if (appName === 'memory') {
-                initMemoryGame();
-            } else if (appName === 'notes') {
-                updateNotesSidebar();
-                selectNote(currentNoteId);
-            } else if (appName === 'safari') {
-                loadSafariPreset('Google');
-            }
+        // Chess Game Logic
+        let chessBoard = [];
+        let selectedSquare = null;
+        let turn = 'w';
+        let chessMode = 'bot';
+
+        function setChessMode(mode) {
+            chessMode = mode;
+            resetChessGame();
         }
 
-        function loadSafariUrl(query) {
-            const input = document.getElementById('safari-url-input');
-            const viewport = document.getElementById('safari-content');
-            if (!viewport) return;
-
-            let cleanQuery = (query || '').trim().toLowerCase();
-            if (!cleanQuery) cleanQuery = 'news';
-
-            if (input) input.value = cleanQuery;
-
-            if (cleanQuery.includes('weather') || cleanQuery.startsWith('weather:')) {
-                renderWorldWeatherView(cleanQuery.replace('weather:', '').replace('weather', '').trim());
-            } else if (cleanQuery.includes('news') || cleanQuery.includes('article') || cleanQuery.startsWith('news:')) {
-                renderNewsArticlesView(cleanQuery.replace('news:', '').replace('news', '').trim());
-            } else {
-                renderNewsArticlesView(cleanQuery);
-            }
+        function resetChessGame() {
+            chessBoard = [
+                ['r','n','b','q','k','b','n','r'],
+                ['p','p','p','p','p','p','p','p'],
+                ['','','','','','','',''],
+                ['','','','','','','',''],
+                ['','','','','','','',''],
+                ['','','','','','','',''],
+                ['P','P','P','P','P','P','P','P'],
+                ['R','N','B','Q','K','B','N','R']
+            ];
+            turn = 'w';
+            selectedSquare = null;
+            const status = document.getElementById('chess-status');
+            if (status) status.innerText = "White's Turn";
+            renderChessBoard();
         }
 
-        function loadSafariPreset(preset) {
-            if (preset === 'Google') loadSafariUrl('news');
-            if (preset === 'Wikipedia') loadSafariUrl('news:world');
-            if (preset === 'Hacker News') loadSafariUrl('news:tech');
-            if (preset === 'Weather') loadSafariUrl('weather');
-        }
-
-        function reloadSafari() {
-            const input = document.getElementById('safari-url-input');
-            if (input) loadSafariUrl(input.value);
-        }
-
-        function safariGoBack() {
-            showCustomMessage('Safari history back navigation simulation.');
-        }
-
-        function safariGoForward() {
-            showCustomMessage('Safari history forward navigation simulation.');
-        }
-
-        const globalWeatherData = {
-            'cupertino': { city: 'Cupertino', country: 'United States', tempF: 72, condition: 'Sunny & Clear', highF: 78, lowF: 55, humidity: 45, wind: '6 mph', uv: '3 Low', icon: 'fa-sun', color: 'text-yellow-400', forecast: [ {day: 'Wed', temp: '74°'}, {day: 'Thu', temp: '71°'}, {day: 'Fri', temp: '69°'}, {day: 'Sat', temp: '75°'}, {day: 'Sun', temp: '77°'} ] },
-            'new york': { city: 'New York', country: 'United States', tempF: 65, condition: 'Partly Cloudy', highF: 68, lowF: 52, humidity: 58, wind: '12 mph', uv: '4 Moderate', icon: 'fa-cloud-sun', color: 'text-amber-300', forecast: [ {day: 'Wed', temp: '63°'}, {day: 'Thu', temp: '60°'}, {day: 'Fri', temp: '66°'}, {day: 'Sat', temp: '70°'}, {day: 'Sun', temp: '68°'} ] },
-            'london': { city: 'London', country: 'United Kingdom', tempF: 58, condition: 'Light Rain', highF: 60, lowF: 48, humidity: 82, wind: '15 mph', uv: '2 Low', icon: 'fa-cloud-showers-heavy', color: 'text-blue-300', forecast: [ {day: 'Wed', temp: '57°'}, {day: 'Thu', temp: '55°'}, {day: 'Fri', temp: '59°'}, {day: 'Sat', temp: '61°'}, {day: 'Sun', temp: '58°'} ] },
-            'tokyo': { city: 'Tokyo', country: 'Japan', tempF: 70, condition: 'Clear Sky', highF: 73, lowF: 59, humidity: 50, wind: '8 mph', uv: '5 Moderate', icon: 'fa-sun', color: 'text-yellow-300', forecast: [ {day: 'Wed', temp: '71°'}, {day: 'Thu', temp: '68°'}, {day: 'Fri', temp: '72°'}, {day: 'Sat', temp: '74°'}, {day: 'Sun', temp: '69°'} ] },
-            'paris': { city: 'Paris', country: 'France', tempF: 62, condition: 'Mostly Cloudy', highF: 65, lowF: 50, humidity: 65, wind: '10 mph', uv: '3 Low', icon: 'fa-cloud', color: 'text-gray-300', forecast: [ {day: 'Wed', temp: '64°'}, {day: 'Thu', temp: '61°'}, {day: 'Fri', temp: '63°'}, {day: 'Sat', temp: '67°'}, {day: 'Sun', temp: '65°'} ] },
-            'sydney': { city: 'Sydney', country: 'Australia', tempF: 78, condition: 'Sunny & Warm', highF: 82, lowF: 64, humidity: 40, wind: '11 mph', uv: '7 High', icon: 'fa-sun', color: 'text-orange-400', forecast: [ {day: 'Wed', temp: '80°'}, {day: 'Thu', temp: '79°'}, {day: 'Fri', temp: '76°'}, {day: 'Sat', temp: '81°'}, {day: 'Sun', temp: '83°'} ] },
-            'dubai': { city: 'Dubai', country: 'United Arab Emirates', tempF: 94, condition: 'Sunny & Hot', highF: 98, lowF: 80, humidity: 35, wind: '9 mph', uv: '9 Very High', icon: 'fa-sun', color: 'text-amber-500', forecast: [ {day: 'Wed', temp: '95°'}, {day: 'Thu', temp: '96°'}, {day: 'Fri', temp: '93°'}, {day: 'Sat', temp: '97°'}, {day: 'Sun', temp: '94°'} ] }
+        const pieceIcons = {
+            'r': 'fa-chess-rook', 'n': 'fa-chess-knight', 'b': 'fa-chess-bishop', 'q': 'fa-chess-queen', 'k': 'fa-chess-king', 'p': 'fa-chess-pawn',
+            'R': 'fa-chess-rook', 'N': 'fa-chess-knight', 'B': 'fa-chess-bishop', 'Q': 'fa-chess-queen', 'K': 'fa-chess-king', 'P': 'fa-chess-pawn'
         };
 
-        let isCelsius = false;
-
-        function renderWorldWeatherView(targetCity) {
-            const viewport = document.getElementById('safari-content');
-            if (!viewport) return;
-
-            const cityKey = targetCity ? targetCity.toLowerCase().trim() : 'cupertino';
-            const data = globalWeatherData[cityKey] || globalWeatherData['cupertino'];
-
-            const tempDisplay = isCelsius ? Math.round((data.tempF - 32) * 5/9) + '°C' : data.tempF + '°F';
-            const highDisplay = isCelsius ? Math.round((data.highF - 32) * 5/9) + '°' : data.highF + '°';
-            const lowDisplay = isCelsius ? Math.round((data.lowF - 32) * 5/9) + '°' : data.lowF + '°';
-
-            viewport.innerHTML = `
-                <div class="w-full max-w-3xl text-left space-y-5 my-auto p-2">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-earth-americas text-2xl text-blue-400"></i>
-                            <div>
-                                <h2 class="text-base font-bold">Real-Time World Weather</h2>
-                                <p class="text-[10px] text-white/50">Live weather reports and 5-day forecasts across global capitals</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 bg-white/10 p-1 rounded-xl text-xs">
-                            <button onclick="isCelsius=false; renderWorldWeatherView('${data.city}')" class="px-2.5 py-0.5 rounded-lg ${!isCelsius ? 'bg-blue-600 text-white font-bold' : 'text-white/60 hover:text-white'}">°F</button>
-                            <button onclick="isCelsius=true; renderWorldWeatherView('${data.city}')" class="px-2.5 py-0.5 rounded-lg ${isCelsius ? 'bg-blue-600 text-white font-bold' : 'text-white/60 hover:text-white'}">°C</button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center space-x-2 overflow-x-auto pb-2 text-xs">
-                        ${Object.keys(globalWeatherData).map(k => {
-                            const c = globalWeatherData[k];
-                            const active = c.city.toLowerCase() === data.city.toLowerCase();
-                            return `<button onclick="renderWorldWeatherView('${k}')" class="px-3 py-1.5 rounded-xl border transition shrink-0 ${active ? 'bg-blue-600 border-blue-400 text-white font-semibold' : 'bg-white/5 border-white/10 hover:bg-white/10 text-white/80'}">${c.city}</button>`;
-                        }).join('')}
-                    </div>
-
-                    <div class="p-6 bg-gradient-to-br from-blue-900/40 via-indigo-950/60 to-black/80 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-                            <div>
-                                <div class="text-xs uppercase tracking-wider text-blue-300 font-semibold mb-1">${data.country}</div>
-                                <h3 class="text-3xl font-extrabold text-white">${data.city}</h3>
-                                <div class="text-5xl font-light my-3 text-white">${tempDisplay}</div>
-                                <p class="text-xs text-white/80 font-medium">${data.condition} • H:${highDisplay} L:${lowDisplay}</p>
-                            </div>
-                            <div class="text-center sm:text-right">
-                                <i class="fa-solid ${data.icon} ${data.color} text-7xl mb-2 drop-shadow-lg animate-pulse"></i>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-3 mt-6 pt-4 border-t border-white/10 text-xs">
-                            <div class="bg-black/30 p-2.5 rounded-2xl border border-white/5">
-                                <div class="text-white/50 text-[10px] uppercase font-semibold">Humidity</div>
-                                <div class="font-bold text-white text-sm mt-0.5">${data.humidity}%</div>
-                            </div>
-                            <div class="bg-black/30 p-2.5 rounded-2xl border border-white/5">
-                                <div class="text-white/50 text-[10px] uppercase font-semibold">Wind Speed</div>
-                                <div class="font-bold text-white text-sm mt-0.5">${data.wind}</div>
-                            </div>
-                            <div class="bg-black/30 p-2.5 rounded-2xl border border-white/5">
-                                <div class="text-white/50 text-[10px] uppercase font-semibold">UV Index</div>
-                                <div class="font-bold text-white text-sm mt-0.5">${data.uv}</div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-3 border-t border-white/10">
-                            <div class="text-[11px] font-semibold text-white/60 mb-2">5-Day Forecast</div>
-                            <div class="grid grid-cols-5 gap-2 text-center text-xs">
-                                ${data.forecast.map(f => `
-                                    <div class="bg-white/5 p-2 rounded-xl border border-white/5">
-                                        <div class="text-white/50 text-[10px]">${f.day}</div>
-                                        <div class="font-bold text-white mt-1">${f.temp}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        const newsArticles = [
-            { id: 1, category: 'World', title: 'Global Climate Summit Reaches Historic Agreement on Renewable Energy', snippet: 'Delegates from over 190 nations have finalized a landmark treaty committing to triple global renewable capacity by 2030.', author: 'Reuters World', time: '12 mins ago', image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80', content: 'In an extraordinary late-night session, diplomats agreed to mandatory target reductions in greenhouse gas emissions along with unprecedented investment commitments toward solar and wind projects across developing nations.' },
-            { id: 2, category: 'Tech', title: 'Next-Generation Quantum Chips Achieve record 99.9% Gate Fidelity', snippet: 'Researchers announce a breakthrough in fault-tolerant quantum computing systems that operate at room temperatures.', author: 'TechCrunch', time: '45 mins ago', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', content: 'This breakthrough paves the way for commercial-scale quantum algorithms in material science, molecular simulation, and complex cryptographic processing without requiring ultra-expensive cryo-cooling setups.' },
-            { id: 3, category: 'Tech', title: 'Mac & CheeseOS Edition Released to Worldwide Developers', snippet: 'Apple ecosystem developers celebrate the launch of lightweight, browser-native web operating system environments.', author: 'Ars Technica', time: '1 hour ago', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80', content: 'By leveraging HTML5, Tailwind styling, and modular state management, modern WebOS platforms offer complete desktop-grade user interfaces directly inside any standard modern browser canvas.' },
-            { id: 4, category: 'Business', title: 'Global Markets Rally as Inflation Data Cools Ahead of Central Bank Meetings', snippet: 'Stock indices in New York, London, and Tokyo posted sharp gains following unexpectedly positive economic indicators.', author: 'Bloomberg Market', time: '2 hours ago', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80', content: 'Investors responded enthusiastically to consumer price index reports showing inflation stabilizing near long-term target rates across primary industrial sectors.' },
-            { id: 5, category: 'Science', title: 'James Webb Telescope Uncovers Atmospheric Water Vapor on Earth-sized Exoplanet', snippet: 'Deep space spectroscopy measurements reveal promising planetary atmosphere conditions 40 light-years away.', author: 'NASA Space Science', time: '3 hours ago', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', content: 'Astronomers confirmed distinct spectral absorption lines indicating atmospheric water vapor and silicate clouds surrounding a planet located in its star habitable zone.' }
-        ];
-
-        let activeCategory = 'All';
-
-        function renderNewsArticlesView(filterQuery) {
-            const viewport = document.getElementById('safari-content');
-            if (!viewport) return;
-
-            let query = (filterQuery || '').toLowerCase().trim();
-            if (query === 'world') activeCategory = 'World';
-            else if (query === 'tech') activeCategory = 'Tech';
-            else if (query === 'business') activeCategory = 'Business';
-
-            const filtered = newsArticles.filter(a => {
-                const matchesCategory = activeCategory === 'All' || a.category === activeCategory;
-                const matchesSearch = !query || a.title.toLowerCase().includes(query) || a.snippet.toLowerCase().includes(query) || a.category.toLowerCase().includes(query);
-                return matchesCategory && matchesSearch;
-            });
-
-            viewport.innerHTML = `
-                <div class="w-full max-w-3xl text-left space-y-4 my-auto p-2">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-newspaper text-2xl text-amber-400"></i>
-                            <div>
-                                <h2 class="text-base font-bold">Global News Network</h2>
-                                <p class="text-[10px] text-white/50">Real-time breaking news, tech developments, and world reporting</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-1.5 text-xs">
-                            ${['All', 'World', 'Tech', 'Business', 'Science'].map(cat => `
-                                <button onclick="activeCategory='${cat}'; renderNewsArticlesView('')" class="px-2.5 py-1 rounded-xl transition ${activeCategory === cat ? 'bg-amber-500 text-black font-bold' : 'bg-white/5 hover:bg-white/10 text-white/70'}">${cat}</button>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        ${filtered.length ? filtered.map(a => `
-                            <div onclick="openFullNewsArticle(${a.id})" class="p-4 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition cursor-pointer flex flex-col sm:flex-row gap-4 group">
-                                <img src="${a.image}" class="w-full sm:w-36 h-28 object-cover rounded-xl border border-white/10 group-hover:scale-105 transition">
-                                <div class="flex-1 space-y-1.5">
-                                    <div class="flex items-center justify-between text-[10px]">
-                                        <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">${a.category}</span>
-                                        <span class="text-white/40">${a.time} •${a.author}</span>
-                                    </div>
-                                    <h3 class="text-sm font-bold text-white group-hover:text-blue-400 transition line-clamp-2">${a.title}</h3>
-                                    <p class="text-xs text-white/70 line-clamp-2 leading-relaxed">${a.snippet}</p>
-                                </div>
-                            </div>
-                        `).join('') : '<div class="p-8 text-center text-white/50 text-xs">No news articles found matching your query.</div>'}
-                    </div>
-                </div>
-            `;
-        }
-
-        function openFullNewsArticle(articleId) {
-            const article = newsArticles.find(a => a.id === articleId);
-            if (!article) return;
-
-            const viewport = document.getElementById('safari-content');
-            if (!viewport) return;
-
-            viewport.innerHTML = `
-                <div class="w-full max-w-2xl text-left space-y-4 my-auto p-2">
-                    <button onclick="renderNewsArticlesView('')" class="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-xl text-xs text-white font-medium transition flex items-center space-x-1">
-                        <i class="fa-solid fa-arrow-left"></i><span>Back to News Feed</span>
-                    </button>
-
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-2 text-xs">
-                            <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30 text-[10px]">${article.category}</span>
-                            <span class="text-white/50">${article.time} • By ${article.author}</span>
-                        </div>
-                        <h1 class="text-xl font-bold text-white leading-tight">${article.title}</h1>
-                        <img src="${article.image}" class="w-full h-52 object-cover rounded-2xl border border-white/15 my-3 shadow-lg">
-                        <div class="text-xs text-white/80 leading-relaxed space-y-3 bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <p class="font-medium text-white">${article.snippet}</p>
-                            <p>${article.content}</p>
-                            <p class="text-white/60">This live news broadcast is integrated natively into Mac & CheeseOS Browser edition.</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        let snakeGameInterval = null;
-        let snakeScore = 0;
-        let snakeDir = { x: 1, y: 0 };
-        let snakePos = [{ x: 10, y: 10 }];
-        let foodPos = { x: 15, y: 15 };
-
-        function startSnakeGame() {
-            if (snakeGameInterval) clearInterval(snakeGameInterval);
-            snakeScore = 0;
-            snakeDir = { x: 1, y: 0 };
-            snakePos = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
-            foodPos = getRandomGridPos();
-            
-            const scoreEl = document.getElementById('snake-score');
-            if (scoreEl) scoreEl.innerText = snakeScore;
-
-            snakeGameInterval = setInterval(updateSnake, 120);
-        }
-
-        function getRandomGridPos() {
-            return {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 20)
-            };
-        }
-
-        function updateSnake() {
-            const canvas = document.getElementById('snake-canvas');
-            if (!canvas) {
-                if (snakeGameInterval) clearInterval(snakeGameInterval);
-                return;
-            }
-            const ctx = canvas.getContext('2d');
-            const gridSize = 16;
-
-            const head = { x: snakePos[0].x + snakeDir.x, y: snakePos[0].y + snakeDir.y };
-
-            if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snakePos.some(p => p.x === head.x && p.y === head.y)) {
-                clearInterval(snakeGameInterval);
-                showCustomMessage(`Game Over!\nFinal Score: ${snakeScore}`);
-                return;
-            }
-
-            snakePos.unshift(head);
-
-            if (head.x === foodPos.x && head.y === foodPos.y) {
-                snakeScore += 10;
-                const scoreEl = document.getElementById('snake-score');
-                if (scoreEl) scoreEl.innerText = snakeScore;
-                foodPos = getRandomGridPos();
-            } else {
-                snakePos.pop();
-            }
-
-            ctx.fillStyle = '#09090b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#ef4444';
-            ctx.beginPath();
-            ctx.arc(foodPos.x * gridSize + 8, foodPos.y * gridSize + 8, 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            snakePos.forEach((p, idx) => {
-                ctx.fillStyle = idx === 0 ? '#10b981' : '#34d399';
-                ctx.fillRect(p.x * gridSize + 1, p.y * gridSize + 1, gridSize - 2, gridSize - 2);
-            });
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (activeWindows['snake']) {
-                if ((e.key === 'ArrowUp' || e.key === 'w') && snakeDir.y === 0) snakeDir = { x: 0, y: -1 };
-                if ((e.key === 'ArrowDown' || e.key === 's') && snakeDir.y === 0) snakeDir = { x: 0, y: 1 };
-                if ((e.key === 'ArrowLeft' || e.key === 'a') && snakeDir.x === 0) snakeDir = { x: -1, y: 0 };
-                if ((e.key === 'ArrowRight' || e.key === 'd') && snakeDir.x === 0) snakeDir = { x: 1, y: 0 };
-            }
-        });
-
-        let memoryCards = [];
-        let flippedCards = [];
-        let matchedPairs = 0;
-
-        function initMemoryGame() {
-            const icons = ['fa-ghost', 'fa-gamepad', 'fa-rocket', 'fa-bolt', 'fa-gem', 'fa-heart'];
-            const cardsData = [...icons, ...icons].sort(() => Math.random() - 0.5);
-            memoryCards = cardsData.map((icon, idx) => ({ id: idx, icon, flipped: false, matched: false }));
-            flippedCards = [];
-            matchedPairs = 0;
-            renderMemoryGame();
-        }
-
-        function renderMemoryGame() {
-            const grid = document.getElementById('memory-grid');
-            if (!grid) return;
-            grid.innerHTML = memoryCards.map(c => `
-                <div onclick="flipMemoryCard(${c.id})" class="h-20 bg-white/10 hover:bg-white/20 rounded-2xl flex items-center justify-center text-2xl cursor-pointer border border-white/10 transition-all transform ${c.flipped || c.matched ? 'bg-purple-600/80' : ''}">
-                    <i class="fa-solid ${c.flipped || c.matched ? c.icon : 'fa-question'} text-white"></i>
-                </div>
-            `).join('');
-        }
-
-        function flipMemoryCard(id) {
-            const card = memoryCards.find(c => c.id === id);
-            if (!card || card.flipped || card.matched || flippedCards.length >= 2) return;
-
-            card.flipped = true;
-            flippedCards.push(card);
-            renderMemoryGame();
-
-            if (flippedCards.length === 2) {
-                if (flippedCards[0].icon === flippedCards[1].icon) {
-                    flippedCards[0].matched = true;
-                    flippedCards[1].matched = true;
-                    flippedCards = [];
-                    matchedPairs++;
-                    if (matchedPairs === 6) {
-                        setTimeout(() => showCustomMessage('Congratulations! You matched all memory pairs! 🎉'), 300);
+        function renderChessBoard() {
+            const boardEl = document.getElementById('chess-board');
+            if (!boardEl) return;
+            boardEl.innerHTML = '';
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const isDark = (r + c) % 2 === 1;
+                    const piece = chessBoard[r][c];
+                    const isSelected = selectedSquare && selectedSquare.r === r && selectedSquare.c === c;
+                    const sq = document.createElement('div');
+                    sq.className = `flex items-center justify-center cursor-pointer text-xl sm:text-2xl ${isDark ? 'bg-amber-900/80' : 'bg-amber-100/90'} ${isSelected ? 'ring-2 ring-blue-400' : ''}`;
+                    if (piece) {
+                        const isWhitePiece = piece === piece.toUpperCase();
+                        sq.innerHTML = `<i class="fa-solid ${pieceIcons[piece]} ${isWhitePiece ? 'text-amber-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]' : 'text-gray-950'}"></i>`;
                     }
-                } else {
-                    setTimeout(() => {
-                        flippedCards[0].flipped = false;
-                        flippedCards[1].flipped = false;
-                        flippedCards = [];
-                        renderMemoryGame();
-                    }, 800);
+                    sq.onclick = () => handleSquareClick(r, c);
+                    boardEl.appendChild(sq);
                 }
             }
         }
 
+        function handleSquareClick(r, c) {
+            const piece = chessBoard[r][c];
+            const isWhitePiece = piece && piece === piece.toUpperCase();
+            const isBlackPiece = piece && piece === piece.toLowerCase();
+
+            if (selectedSquare) {
+                if (selectedSquare.r === r && selectedSquare.c === c) {
+                    selectedSquare = null;
+                } else if ((turn === 'w' && isWhitePiece) || (turn === 'b' && isBlackPiece)) {
+                    selectedSquare = { r, c };
+                } else {
+                    chessBoard[r][c] = chessBoard[selectedSquare.r][selectedSquare.c];
+                    chessBoard[selectedSquare.r][selectedSquare.c] = '';
+                    selectedSquare = null;
+
+                    if (chessMode === 'human') {
+                        turn = turn === 'w' ? 'b' : 'w';
+                        const status = document.getElementById('chess-status');
+                        if (status) status.innerText = turn === 'w' ? "White's Turn" : "Black's Turn";
+                        renderChessBoard();
+                    } else {
+                        turn = 'b';
+                        const status = document.getElementById('chess-status');
+                        if (status) status.innerText = "Bot thinking...";
+                        renderChessBoard();
+                        setTimeout(botMove, 600);
+                    }
+                    return;
+                }
+            } else {
+                if ((turn === 'w' && isWhitePiece) || (turn === 'b' && isBlackPiece)) {
+                    selectedSquare = { r, c };
+                }
+            }
+            renderChessBoard();
+        }
+
+        function botMove() {
+            let blackPieces = [];
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = chessBoard[r][c];
+                    if (p && p === p.toLowerCase()) blackPieces.push({ r, c, p });
+                }
+            }
+            if (blackPieces.length > 0) {
+                const randomPiece = blackPieces[Math.floor(Math.random() * blackPieces.length)];
+                const targetRow = Math.min(7, randomPiece.r + 1);
+                chessBoard[targetRow][randomPiece.c] = randomPiece.p;
+                chessBoard[randomPiece.r][randomPiece.c] = '';
+            }
+            turn = 'w';
+            const status = document.getElementById('chess-status');
+            if (status) status.innerText = "White's Turn";
+            renderChessBoard();
+        }
+
+        // Snake Game Logic
+        let snakeInterval = null, snakeScore = 0, snakeDir = {x:1, y:0}, snakePos = [{x:10, y:10}], food = {x:5, y:5};
+        function startSnakeGame() {
+            if (snakeInterval) clearInterval(snakeInterval);
+            snakeScore = 0; snakeDir = {x:1, y:0}; snakePos = [{x:10, y:10}, {x:9, y:10}];
+            snakeInterval = setInterval(() => {
+                const canvas = document.getElementById('snake-canvas');
+                if (!canvas) { clearInterval(snakeInterval); return; }
+                const ctx = canvas.getContext('2d');
+                const head = {x: snakePos[0].x + snakeDir.x, y: snakePos[0].y + snakeDir.y};
+                if (head.x < 0 || head.x >= 15 || head.y < 0 || head.y >= 15) { clearInterval(snakeInterval); alert('Game Over!'); return; }
+                snakePos.unshift(head);
+                if (head.x === food.x && head.y === food.y) {
+                    food = {x: Math.floor(Math.random()*15), y: Math.floor(Math.random()*15)};
+                } else { snakePos.pop(); }
+                ctx.fillStyle = '#000'; ctx.fillRect(0,0,240,240);
+                ctx.fillStyle = '#ef4444'; ctx.fillRect(food.x*16, food.y*16, 14, 14);
+                ctx.fillStyle = '#10b981';
+                snakePos.forEach(p => ctx.fillRect(p.x*16, p.y*16, 14, 14));
+            }, 130);
+        }
+
+        // Notes Logic
+        function updateNotesSidebar() {
+            const sidebar = document.getElementById('notes-sidebar');
+            if (sidebar) {
+                sidebar.innerHTML = notesList.map(n => `
+                    <div onclick="selectNote(${n.id})" class="p-1.5 rounded-lg cursor-pointer truncate ${n.id === currentNoteId ? 'bg-blue-600' : 'hover:bg-white/10'}">${n.title}</div>
+                `).join('');
+            }
+        }
         function selectNote(id) {
             currentNoteId = id;
             const note = notesList.find(n => n.id === id);
             if (note) {
-                const titleInput = document.getElementById('note-title-input');
-                const contentInput = document.getElementById('note-content-input');
-                if (titleInput) titleInput.value = note.title;
-                if (contentInput) contentInput.value = note.content;
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-content').value = note.content;
             }
             updateNotesSidebar();
         }
-
         function createNewNote() {
-            const newId = Date.now();
-            notesList.push({ id: newId, title: 'Untitled Note', content: 'Write your thoughts here...' });
-            selectNote(newId);
+            const id = Date.now();
+            notesList.push({id, title: 'New Note', content: ''});
+            selectNote(id);
         }
-
-        function updateActiveNote() {
+        function updateNote() {
             const note = notesList.find(n => n.id === currentNoteId);
             if (note) {
-                const titleInput = document.getElementById('note-title-input');
-                const contentInput = document.getElementById('note-content-input');
-                if (titleInput) note.title = titleInput.value;
-                if (contentInput) note.content = contentInput.value;
-                const widgetPreview = document.getElementById('widget-note-preview');
-                if (widgetPreview) widgetPreview.innerText = note.content;
+                note.title = document.getElementById('note-title').value;
+                note.content = document.getElementById('note-content').value;
                 updateNotesSidebar();
             }
         }
 
-        function updateNotesSidebar() {
-            const sidebar = document.getElementById('notes-sidebar-list');
-            if (sidebar) {
-                sidebar.innerHTML = notesList.map(n => `
-                    <div onclick="selectNote(${n.id})" class="p-2.5 rounded-xl cursor-pointer ${n.id === currentNoteId ? 'bg-blue-600/85' : 'hover:bg-white/10'}">
-                        <div class="font-medium text-xs truncate">${n.title}</div>
-                        <div class="text-[10px] text-white/60 truncate">${n.content}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
+        // Calculator Logic
         let calcVal = '0';
         function calcAction(val) {
             const display = document.getElementById('calc-display');
             if (!display) return;
-            if (val === 'clear') {
-                calcVal = '0';
-            } else if (val === '=') {
-                try {
-                    calcVal = eval(calcVal.replace('×', '*').replace('÷', '/')).toString();
-                } catch {
-                    calcVal = 'Error';
-                }
-            } else if (val === '+/-') {
-                if (calcVal.startsWith('-')) calcVal = calcVal.substring(1);
-                else calcVal = '-' + calcVal;
-            } else if (val === '%') {
-                try { calcVal = (parseFloat(calcVal) / 100).toString(); } catch { calcVal = 'Error'; }
+            if (val === 'C') calcVal = '0';
+            else if (val === '=') {
+                try { calcVal = eval(calcVal.replace('×','*').replace('÷','/')).toString(); } catch { calcVal = 'Error'; }
             } else {
-                if (calcVal === '0' || calcVal === 'Error') calcVal = val;
-                else calcVal += val;
+                calcVal = calcVal === '0' ? val : calcVal + val;
             }
             display.innerText = calcVal;
         }
 
-        function handleTerminalInput(e) {
+        // Terminal Logic
+        function handleTerm(e) {
             if (e.key === 'Enter') {
-                const input = e.target;
-                const cmd = (input.value || '').trim();
-                const output = document.getElementById('terminal-output');
-                if (!output) return;
-                
-                let res = '';
-                if (cmd === 'help') {
-                    res = 'Commands: help, clear, date, whoami, ls, matrix, weather, sudo';
-                } else if (cmd === 'clear') {
-                    output.innerHTML = '';
-                    input.value = '';
-                    return;
-                } else if (cmd === 'date') {
-                    res = new Date().toString();
-                } else if (cmd === 'whoami') {
-                    res = 'guest-user@mac-cheese';
-                } else if (cmd === 'ls') {
-                    res = filesList.map(f => f.name).join('   ');
-                } else if (cmd === 'matrix') {
-                    res = 'Wake up, Neo... The Matrix has you.';
-                } else if (cmd === 'weather') {
-                    res = 'Cupertino: 72°F, Sunny & Pleasant.';
-                } else if (cmd === 'sudo') {
-                    res = 'Permission denied: guest is not in the sudoers file. This incident will be reported.';
-                } else if (cmd !== '') {
-                    res = `zsh: command not found: ${cmd}`;
-                }
-
-                output.innerHTML += `<div class="text-white">mac-cheese:~ guest$ ${cmd}</div>`;
-                if (res) output.innerHTML += `<div class="text-green-300 mb-1">${res}</div>`;
-                
-                input.value = '';
-                const body = document.getElementById('terminal-body');
-                if (body) body.scrollTop = body.scrollHeight;
+                const cmd = e.target.value.trim();
+                const out = document.getElementById('term-out');
+                let res = cmd === 'help' ? 'Commands: help, date, clear' : cmd === 'date' ? new Date().toString() : `zsh: command not found: ${cmd}`;
+                out.innerHTML += `<div>$ ${cmd}</div><div class="text-green-300 mb-1">${res}</div>`;
+                e.target.value = '';
             }
         }
 
-        function toggleMusicPlay() {
-            const btn = document.getElementById('music-play-btn');
-            if (!btn) return;
-            const icon = btn.querySelector('i');
-            if (icon && icon.classList.contains('fa-play')) {
-                icon.classList.replace('fa-play', 'fa-pause');
-                icon.classList.remove('ml-0.5');
-            } else if (icon) {
-                icon.classList.replace('fa-pause', 'fa-play');
-                icon.classList.add('ml-0.5');
-            }
-        }
-
-        function openFilePreview(filename) {
-            const file = filesList.find(f => f.name === filename);
-            if (!file) return;
-            if (file.type === 'text') {
-                showCustomMessage(`📄 ${file.name}\n\n${file.content}`);
-            } else if (file.type === 'image') {
-                openPhotoModal(file.url);
-            }
-        }
-
-        function openPhotoModal(url) {
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center animate-window-in p-6';
-            modal.innerHTML = `
-                <div class="relative max-w-4xl max-h-full">
-                    <button onclick="this.parentElement.parentElement.remove()" class="absolute -top-10 right-0 text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-                    <img src="${url}" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl">
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function openTrash() {
-            showCustomMessage("Trash Bin is currently empty.");
+        function initAppLogic(appName) {
+            if (appName === 'chess') resetChessGame();
+            if (appName === 'notes') { updateNotesSidebar(); selectNote(currentNoteId); }
+            if (appName === 'snake') startSnakeGame();
         }
 
         function showCustomMessage(msg) {
-            const box = document.createElement('div');
-            box.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center animate-window-in p-4';
-            box.innerHTML = `
-                <div class="glass-panel w-80 max-w-full p-5 rounded-2xl text-white text-center shadow-2xl border border-white/25">
-                    <p class="text-xs mb-4 whitespace-pre-line leading-relaxed">${msg}</p>
-                    <button onclick="this.parentElement.parentElement.remove()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 rounded-xl text-xs font-medium">OK</button>
-                </div>
-            `;
-            document.body.appendChild(box);
+            alert(msg);
         }
 
-        function restartOS() {
-            location.reload();
-        }
-
-        function lockScreen() {
-            const lockDiv = document.createElement('div');
-            lockDiv.id = 'lock-screen';
-            lockDiv.className = 'fixed inset-0 bg-black/70 backdrop-blur-2xl z-50 flex flex-col items-center justify-center text-white animate-window-in p-4';
-            lockDiv.innerHTML = `
-                <div class="w-24 h-24 rounded-full bg-cover bg-center mb-4 shadow-xl border-2 border-white/20" style="background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80')"></div>
-                <h2 class="text-xl font-semibold mb-6">Alex Morgan</h2>
-                <button onclick="document.getElementById('lock-screen').remove()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-xl text-xs transition shadow-lg">Log In Instantly</button>
-            `;
-            document.body.appendChild(lockDiv);
-            const dropdown = document.getElementById('apple-dropdown');
-            if (dropdown) dropdown.classList.add('hidden');
-        }
-
+        function restartOS() { location.reload(); }
         function changeBrightness(val) {
-            const overlay = document.getElementById('wallpaper-overlay');
-            if (overlay) overlay.style.backgroundColor = `rgba(0,0,0,${(100 - val) / 150})`;
+            document.getElementById('wallpaper-overlay').style.backgroundColor = `rgba(0,0,0,${(100 - val)/150})`;
         }
     </script>
 </body>
